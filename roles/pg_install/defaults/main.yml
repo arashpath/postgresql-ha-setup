@@ -1,0 +1,5 @@
+---
+pg_install_type: offline
+PGDATA: /var/lib/pgsql/12/data
+PGDBUSER: postgres
+DBPASSWORD: Postgres@123

@@ -1,0 +1,7 @@
+#!/usr/bin/ansible-playbook
+---
+
+- hosts: all
+  roles:
+  - pg_steaming
+  

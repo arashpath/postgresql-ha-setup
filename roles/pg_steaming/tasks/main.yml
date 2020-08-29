@@ -1,0 +1,29 @@
+---
+#file: roles/pg_stearming/tasks/main.ym
+- import_tasks: config_pgmaster12.yml
+  become: true
+  when: ansible_eth1.ipv4.address == MASTER_IP
+  tags: 
+  - config_streaming
+  - config_streaming_master
+
+- meta: flush_handlers
+
+- import_tasks: config_pgslave12.yml
+  become: true
+  when: ansible_eth1.ipv4.address == SLAVE1_IP or ansible_eth1.ipv4.address == SLAVE2_IP
+  tags:
+  - config_streaming
+  - config_streaming_slave
+
+- name: Change in postgresql.conf file in master
+  become: true
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: "^#synchronous_standby_names = .*"
+    line: synchronous_standby_names = 'any 1 (slave1,slave2)'
+  when: REPLICATION_TYPE == 'synchronous' and ansible_eth1.ipv4.address == MASTER_IP
+  notify: restart postgres
+  tags: 
+  - config_streaming
+  - config_streaming_master

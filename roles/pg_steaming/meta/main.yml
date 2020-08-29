@@ -1,0 +1,4 @@
+---
+#file: roles/pg_stearming/tasks/main.ym
+dependencies:
+- pg_install
