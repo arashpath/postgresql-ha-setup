@@ -1,0 +1,7 @@
+---
+# file: roles/edb_efm/handlers/main.yml
+- name: restart efm
+  become: true
+  systemd:
+    name: edb-efm-3.10
+    state: restarted

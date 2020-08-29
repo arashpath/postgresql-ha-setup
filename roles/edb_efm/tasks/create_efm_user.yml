@@ -1,0 +1,29 @@
+---
+# file: roles/edb_efm/tasks/create_efm_user.yml
+
+- name: efm user created 
+  postgresql_user:
+    name: '{{ EFM_USER }}'
+    password: '{{ EFM_USER_PASSWORD }}'
+  tags: config_efm
+
+- name: granted pg_read_all_settings to efm user
+  postgresql_membership:
+    group: pg_read_all_settings
+    target_role: '{{ EFM_USER }}'
+  tags: config_efm
+
+- name: privaleges assined to efm user
+  postgresql_privs:
+    database: postgres
+    roles: '{{ EFM_USER }}'
+    privs: EXECUTE
+    type: function
+    schema: pg_catalog
+    objs: "{{ item }}"
+  with_items:
+    - pg_current_wal_lsn()
+    - pg_last_wal_replay_lsn()
+    - pg_wal_replay_resume()  
+    - pg_wal_replay_pause()
+  tags: config_efm

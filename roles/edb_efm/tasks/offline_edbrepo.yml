@@ -1,0 +1,23 @@
+---
+# roles/edb_efm/tasks/offline_edbrepo.yml
+
+- name: edbrepo dir created
+  file:
+    path: /opt/edbrepo
+    state: directory
+
+- name: edb repo copied
+  unarchive:
+    src: edb_redhat_rhel-7-x86_64.tar.gz
+    dest: /opt/edbrepo
+    creates: /opt/edbrepo/repodata/repomd.xml
+
+- name: edb repo added
+  copy:
+    dest: /etc/yum.repos.d/local-edb.repo
+    content: | 
+      [edb-local]
+      name=EDB Local Repo
+      baseurl=file:///opt/edbrepo
+      enabled=1
+      gpgcheck=0

@@ -1,0 +1,60 @@
+---
+
+- name: entry for efm in pg_hba file
+  blockinfile:
+    path: "{{ PGDATA }}/pg_hba.conf"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK FOR EFM"
+    block: |
+      host postgres {{ EFM_USER }} {{ MASTER_IP }}/32 md5
+      host postgres {{ EFM_USER }} {{ SLAVE1_IP }}/32 md5
+      host postgres {{ EFM_USER }} {{ SLAVE2_IP }}/32 md5
+  notify: reload postgres
+    
+- name: efm.nodes file
+  blockinfile:
+    path: /etc/edb/efm-3.10/efm.nodes
+    block: |
+      {{ MASTER_IP }}:7800
+      {{ SLAVE1_IP }}:7800
+      {{ SLAVE2_IP }}:7800
+  notify: restart efm
+
+- name: get encrypted password
+  shell: /usr/edb/efm-3.10/bin/efm encrypt efm --from-env
+  environment:
+    EFMPASS: '{{ EFM_USER_PASSWORD }}'
+  register: pass_opt
+  changed_when: false
+
+- name: configure efm.properties
+  lineinfile:
+    path: /etc/edb/efm-3.10/efm.properties
+    regexp: "{{item.From}}"
+    line: "{{item.To}}"
+  with_items:
+    - { From: 'db.user=', To: 'db.user={{ EFM_USER }}' } 
+    - { From: 'db.password.encrypted=', To: 'db.password.encrypted={{ pass_opt.stdout }}'}
+    - { From: 'db.port=', To: 'db.port=5432'}
+    - { From: 'db.database=', To: 'db.database=postgres'}
+    - { From: 'db.service.owner=', To: 'db.service.owner=postgres'}
+    - { From: 'db.service.name=', To: 'db.service.name=postgresql-12'}
+    - { From: 'db.data.dir=', To: 'db.data.dir={{ PGDATA }}/'}
+    - { From: 'user.email=', To: 'user.email={{NOTIFICATION_EMAIL}}'}
+    - { From: 'is.witness=', To: 'is.witness=false'}
+    - { From: 'auto.allow.hosts=false', To: 'auto.allow.hosts=true'}
+    - { From: 'stable.nodes.file=false', To: 'stable.nodes.file=true'}
+    - { From: 'db.bin=', To: 'db.bin=/usr/pgsql-12/bin'}
+    - { From: 'db.recovery.dir=', To: 'db.recovery.dir={{ PGDATA }}/'}
+    - { From: 'bind.address=', To: 'bind.address={{ ansible_eth1.ipv4.address }}:7800'}
+    - { From: 'master.shutdown.as.failure=false', To: 'master.shutdown.as.failure=true'}
+    - { From: 'ping.server.ip=8.8.8.8', To: 'ping.server.ip=192.168.33.1' }
+    - { From: 'auto.resume.period=0', To: 'auto.resume.period=10' }
+  notify: restart efm
+
+- meta: flush_handlers
+
+- name: efm service started
+  systemd:
+    name: edb-efm-3.10
+    enabled: yes
+    state: started

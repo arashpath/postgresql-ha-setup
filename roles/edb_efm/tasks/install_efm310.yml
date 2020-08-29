@@ -1,0 +1,26 @@
+---
+
+- name: efm prerequisits installed
+  yum: 
+    name:  [ 'java-1.8.0-openjdk', 'mailx' ]
+    state: present
+    
+- name: efm installed
+  yum:
+    name: edb-efm310
+    state: present
+
+- name: efm config files .properties & .node copied
+  copy:
+    src:  "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    owner: efm
+    group: efm
+    remote_src: yes
+    force: no
+  with_items:
+  - src: /etc/edb/efm-3.10/efm.properties.in
+    dest: /etc/edb/efm-3.10/efm.properties
+  - src: /etc/edb/efm-3.10/efm.nodes.in
+    dest: /etc/edb/efm-3.10/efm.nodes      

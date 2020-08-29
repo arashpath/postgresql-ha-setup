@@ -3,5 +3,5 @@
 
 - hosts: all
   roles:
-  - pg_steaming
+  - edb_efm
   
