@@ -15,15 +15,3 @@
   tags:
   - config_streaming
   - config_streaming_slave
-
-- name: Change in postgresql.conf file in master
-  become: true
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "^#synchronous_standby_names = .*"
-    line: synchronous_standby_names = 'any 1 (slave1,slave2)'
-  when: REPLICATION_TYPE == 'synchronous' and ansible_eth1.ipv4.address == MASTER_IP
-  notify: restart postgres
-  tags: 
-  - config_streaming
-  - config_streaming_master

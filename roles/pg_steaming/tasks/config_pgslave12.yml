@@ -9,7 +9,6 @@
 #    group: postgres
 #    mode: '0600'
 
-
 - name: check if standby
   stat: 
     path: "{{ PGDATA }}/standby.signal"
@@ -17,17 +16,21 @@
 
 - name: initialize slave
   block:
+
   - name: db stopped
     systemd:
       name: postgresql-12
       state: stopped
+  
   - name: pgdata directory deleted
     file:
       path: "{{ PGDATA }}"
       state: absent
+  
   - name: pg_basebackup from {{ MASTER_IP }}
     shell: 
       cmd: PGPASSWORD="{{ REPLICATION_USER_PASSWORD }}" /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }} --host="{{ MASTER_IP }}" --port=5432 --username={{ REPLICATION_USER }}
+  
   - name: data directory are set
     file:
       path: "{{ PGDATA }}"
@@ -35,6 +38,7 @@
       owner: postgres
       group: postgres
       recurse: yes
+  
   - name: db started
     systemd:
      name: postgresql-12
@@ -43,37 +47,13 @@
 
   when: not standby.stat.exists
 
-
-
-- name: Modify paramter in postgresql.conf file
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "{{item.From}}"
-    line: "{{item.To}}"
-  with_items:
-    - { From: "^#promote_trigger_file = ''", To: "promote_trigger_file = '{{ PGDATA }}/waltrigger'" }
-    - { From: "^#restore_command = ''", To: "restore_command = 'cp /backup/%f %p'" }
-    - { From: "#recovery_target_timeline = 'latest'", To: "recovery_target_timeline = 'latest'" }
-  notify: restart postgres
-
-- name: Modify paramter in postgresql.conf and postgresql.auto.conf file for slave1
-  when: REPLICATION_TYPE == 'synchronous' and ansible_eth1.ipv4.address == SLAVE1_IP
-  lineinfile: 
-    path: "{{ PGDATA }}/{{ item }}"
-    regexp: ^.+primary_conninfo = .+$
-    line: "primary_conninfo = 'user={{ REPLICATION_USER }} password={{ REPLICATION_USER_PASSWORD }} host={{ MASTER_IP }} port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any application_name=slave1'"
-  with_items:
-   - postgresql.conf
-   - postgresql.auto.conf
-  notify: restart postgres
-
-- name: Modify paramter in postgresql.conf and postgresql.auto.conf file for slave2
-  when: REPLICATION_TYPE == 'synchronous' and ansible_eth1.ipv4.address == SLAVE2_IP
-  lineinfile: 
-    path: "{{ PGDATA }}/{{ item }}"
-    regexp: ^.+primary_conninfo = .+$
-    line: "primary_conninfo = 'user={{ REPLICATION_USER }} password={{ REPLICATION_USER_PASSWORD }} host={{ MASTER_IP }} port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any application_name=slave2'"
-  with_items:
-    - postgresql.conf
-    - postgresql.auto.conf
-  notify: restart postgres
+#- name: Modify paramter in postgresql.conf file
+#  lineinfile:
+#    path: "{{ PGDATA }}/postgresql.conf"
+#    regexp: "{{item.From}}"
+#    line: "{{item.To}}"
+#  with_items:
+#    - { From: "^#promote_trigger_file = ''", To: "promote_trigger_file = '{{ PGDATA }}/waltrigger'" }
+#    - { From: "^#restore_command = ''", To: "restore_command = 'cp /backup/%f %p'" }
+#    - { From: "#recovery_target_timeline = 'latest'", To: "recovery_target_timeline = 'latest'" }
+#  notify: restart postgres

@@ -13,7 +13,7 @@
     target_role: '{{ EFM_USER }}'
   tags: config_efm
 
-- name: privaleges assined to efm user
+- name: privileges assigned to efm user
   postgresql_privs:
     database: postgres
     roles: '{{ EFM_USER }}'

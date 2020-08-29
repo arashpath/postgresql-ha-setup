@@ -1,11 +1,9 @@
 ---
 # file: roles/pg_straming/defaults/main.yml
 
-REPLICATION_TYPE: synchronous
+# Replication
 REPLICATION_USER: replicator
 REPLICATION_USER_PASSWORD: raplicator@123
-
-# 
 
 # IPs
 MASTER_IP: ''

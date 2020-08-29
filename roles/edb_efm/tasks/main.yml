@@ -18,6 +18,11 @@
   tags:
   - efm_config
 
+- import_tasks: config_efm_vip.yml
+  become: yes
+  tags:
+  - efm_config
+
 - import_tasks: config_efm.yml
   become: yes
   tags:

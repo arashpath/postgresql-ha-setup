@@ -24,13 +24,14 @@
   environment:
     EFMPASS: '{{ EFM_USER_PASSWORD }}'
   register: pass_opt
+  check_mode: no
   changed_when: false
 
 - name: configure efm.properties
   lineinfile:
     path: /etc/edb/efm-3.10/efm.properties
-    regexp: "{{item.From}}"
-    line: "{{item.To}}"
+    regexp: "{{ item.From }}"
+    line: "{{ item.To }}"
   with_items:
     - { From: 'db.user=', To: 'db.user={{ EFM_USER }}' } 
     - { From: 'db.password.encrypted=', To: 'db.password.encrypted={{ pass_opt.stdout }}'}

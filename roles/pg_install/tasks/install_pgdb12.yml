@@ -19,6 +19,7 @@
   copy:
     dest: /etc/systemd/system/postgresql-12.service  
     src: /usr/lib/systemd/system/postgresql-12.service
+    mode: preserve
     force: no
     remote_src: yes
 

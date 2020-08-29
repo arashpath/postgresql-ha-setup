@@ -15,6 +15,7 @@
 - name: edb repo added
   copy:
     dest: /etc/yum.repos.d/local-edb.repo
+    mode: 0644
     content: | 
       [edb-local]
       name=EDB Local Repo
