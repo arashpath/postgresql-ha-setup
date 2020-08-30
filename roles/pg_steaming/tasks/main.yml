@@ -13,19 +13,15 @@
 
 - import_tasks: config_pgslave12.yml
   become: true
-  when: ansible_eth1.ipv4.address == SLAVE1_IP or ansible_eth1.ipv4.address == SLAVE2_IP
+  when: ansible_eth1.ipv4.address == SLAVE1_IP 
+     or ansible_eth1.ipv4.address == SLAVE2_IP
   tags:
   - pg_rep
   - pg_rep_slave
 
-- name: synchronous standby names are updated in master's postgresql.conf file
+- import_tasks: config_sync.yml
   become: true
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "^#synchronous_standby_names = .*"
-    line: "synchronous_standby_names = 'any 1 ({{ 'node' + SLAVE1_IP.split('.')[3] }},{{ 'node' + SLAVE2_IP.split('.')[3] }})'"
-  when: REPLICATION_TYPE == 'synchronous' and ansible_eth1.ipv4.address == MASTER_IP
-  notify: restart postgres
+  when: REPLICATION_TYPE == 'synchronous'
   tags: 
   - pg_rep
 

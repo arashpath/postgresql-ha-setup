@@ -2,8 +2,8 @@
 # file: roles/pg_straming/defaults/main.yml
 
 # Replication
-REPLICATION_SLOT: False  #True
-REPLICATION_TYPE: async  #synchronous
+REPLICATION_SLOT: False         #/True
+REPLICATION_TYPE: asynchronous  #/synchronous
 REPLICATION_USER: replicator
 REPLICATION_PASS: raplicator@123
 

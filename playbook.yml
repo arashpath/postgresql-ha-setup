@@ -12,9 +12,12 @@
     MASTER_IP: 192.168.33.11
     SLAVE1_IP: 192.168.33.12
     SLAVE2_IP: 192.168.33.13
+    # replication
+    REPLICATION_TYPE: synchronous
 
   pre_tasks:
   - import_tasks: clean.yml
+    become: true
     tags:
     - never
     - clean

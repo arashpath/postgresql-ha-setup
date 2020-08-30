@@ -1,0 +1,28 @@
+---
+
+- name: synchronous standby names updated in {{ MASTER_IP }}
+  become: true
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: "^#synchronous_standby_names = .*"
+    line: "synchronous_standby_names = 'any 1 ({{ 'node' + SLAVE1_IP.split('.')[3] }},{{ 'node' + SLAVE2_IP.split('.')[3] }})'"
+  when: ansible_eth1.ipv4.address == MASTER_IP
+  notify: restart postgres
+
+- name: synchronous standby names updated in {{ SLAVE1_IP }}
+  become: true
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: "^#synchronous_standby_names = .*"
+    line: "synchronous_standby_names = 'any 1 ({{ 'node' + SLAVE2_IP.split('.')[3] }},{{ 'node' + MASTER_IP.split('.')[3] }})'"
+  when: ansible_eth1.ipv4.address == SLAVE1_IP
+  notify: restart postgres
+
+- name: synchronous standby names updated in {{ SLAVE2_IP }}
+  become: true
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: "^#synchronous_standby_names = .*"
+    line: "synchronous_standby_names = 'any 1 ({{ 'node' + MASTER_IP.split('.')[3] }},{{ 'node' + SLAVE1_IP.split('.')[3] }})'"
+  when: ansible_eth1.ipv4.address == SLAVE2_IP
+  notify: restart postgres
