@@ -1,5 +1,13 @@
 ---
-- name: Add entry in pg_hba file
+
+- name: replication role created
+  postgresql_user:
+    name: "{{ REPLICATION_USER }}"
+    role_attr_flags: REPLICATION
+    password: "{{ REPLICATION_PASS }}"
+  no_log: true
+
+- name: pg_hba entry added for replication
   blockinfile:
     path: "{{ PGDATA }}/pg_hba.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR REPLICATION"
@@ -8,6 +16,16 @@
       host replication {{ REPLICATION_USER }} {{ SLAVE1_IP }}/32 md5
       host replication {{ REPLICATION_USER }} {{ SLAVE2_IP }}/32 md5
   notify: reload postgres
+
+- name: replication slots created
+  postgresql_slot:
+    name: "{{ item }}"
+    slot_type: physical
+    state: present
+  with_items:
+  - "{{ 'node' + SLAVE1_IP.split('.')[3] }}"
+  - "{{ 'node' + SLAVE2_IP.split('.')[3] }}"
+  when: REPLICATION_SLOT
 
 - name: Change parameter in postgresql file
   lineinfile:
@@ -32,8 +50,10 @@
     - { From: "#recovery_target_timeline = 'latest'", To: "recovery_target_timeline = 'latest'" }
   notify: restart postgres
 
-- name: replication role created
-  postgresql_user:
-    name: "{{ REPLICATION_USER }}"
-    role_attr_flags: REPLICATION
-    password: "{{ REPLICATION_USER_PASSWORD }}"
+- name: synchronous_commit setting if replication type synchronous
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: '^#synchronous_commit = on'
+    line: synchronous_commit = on
+  when: REPLICATION_TYPE == 'synchronous'
+  notify: restart postgres

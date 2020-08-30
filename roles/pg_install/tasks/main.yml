@@ -5,7 +5,6 @@
   become: yes
   when: pg_install_type == 'offline'
   tags: 
-  - pg_install
   - pg_repo
 
 - import_tasks: install_pgdb12.yml

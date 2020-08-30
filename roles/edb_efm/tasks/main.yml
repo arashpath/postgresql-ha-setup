@@ -4,7 +4,6 @@
   become: yes
   when: edb_install_type == 'offline'
   tags: 
-  - efm_install
   - edb_repo
 
 - import_tasks: install_efm310.yml
@@ -18,12 +17,20 @@
   tags:
   - efm_config
 
+- import_tasks: config_efm.yml
+  become: yes
+  tags:
+  - efm_config
+
 - import_tasks: config_efm_vip.yml
   become: yes
   tags:
   - efm_config
 
-- import_tasks: config_efm.yml
-  become: yes
-  tags:
-  - efm_config
+- meta: flush_handlers
+
+- name: efm service started
+  systemd:
+    name: edb-efm-3.10
+    enabled: yes
+    state: started

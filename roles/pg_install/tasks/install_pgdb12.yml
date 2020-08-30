@@ -36,9 +36,9 @@
 #  - name: Configure postgres 12 if default user is not postgres 
 #    shell:
 #      creates: "{{ PGDATA }}/postgresql.conf" 
-#      cmd: sudo /sbin/runuser -l postgres -c '/usr/pgsql-12/bin/initdb -U {{PGDBUSER}} -D {{ PGDATA }}'
+#      cmd: sudo /sbin/runuser -l postgres -c '/usr/pgsql-12/bin/initdb -U {{PGUSER}} -D {{ PGDATA }}'
 #      warn: false
-#    when: PGDBUSER != 'postgres'
+#    when: PGUSER != 'postgres'
 
 - name: Allow local login as trust 
   postgresql_pg_hba:
@@ -68,7 +68,8 @@
     state: directory
     owner: postgres
 
-- name: Reset '{{PGDBUSER}}' password
+- name: Reset '{{PGUSER}}' password
   postgresql_user:
-    name: "{{ PGDBUSER }}"
-    password: "{{ DBPASSWORD }}"
+    name: "{{ PGUSER }}"
+    password: "{{ PGPASS }}"
+  no_log: true

@@ -3,7 +3,7 @@
 #- name: Create pgpass file
 #  lineinfile:
 #    path: /var/lib/pgsql/.pgpass
-#    line: "*:5432:*:{{ REPLICATION_USER }}:{{ REPLICATION_USER_PASSWORD }}"
+#    line: "*:5432:*:{{ REPLICATION_USER }}:{{ REPLICATION_PASS }}"
 #    create: yes
 #    owner: postgres
 #    group: postgres
@@ -27,9 +27,24 @@
       path: "{{ PGDATA }}"
       state: absent
   
+  - name: pg_basebackup from {{ MASTER_IP }} with replication slot
+    shell: 
+      cmd: | 
+        PGAPPNAME="{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}" \
+        PGPASSWORD="{{ REPLICATION_PASS }}" \
+        /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }} \
+          --slot="{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}" \
+          --host="{{ MASTER_IP }}" --port=5432 --username={{ REPLICATION_USER }}
+    when: REPLICATION_SLOT
+
   - name: pg_basebackup from {{ MASTER_IP }}
     shell: 
-      cmd: PGPASSWORD="{{ REPLICATION_USER_PASSWORD }}" /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }} --host="{{ MASTER_IP }}" --port=5432 --username={{ REPLICATION_USER }}
+      cmd: | 
+        PGAPPNAME="{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}" \
+        PGPASSWORD="{{ REPLICATION_PASS }}" \
+        /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }} \
+          --host="{{ MASTER_IP }}" --port=5432 --username={{ REPLICATION_USER }}
+    when: not REPLICATION_SLOT  
   
   - name: data directory are set
     file:
@@ -46,14 +61,3 @@
      enabled: yes
 
   when: not standby.stat.exists
-
-#- name: Modify paramter in postgresql.conf file
-#  lineinfile:
-#    path: "{{ PGDATA }}/postgresql.conf"
-#    regexp: "{{item.From}}"
-#    line: "{{item.To}}"
-#  with_items:
-#    - { From: "^#promote_trigger_file = ''", To: "promote_trigger_file = '{{ PGDATA }}/waltrigger'" }
-#    - { From: "^#restore_command = ''", To: "restore_command = 'cp /backup/%f %p'" }
-#    - { From: "#recovery_target_timeline = 'latest'", To: "recovery_target_timeline = 'latest'" }
-#  notify: restart postgres

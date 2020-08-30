@@ -1,7 +1,24 @@
 #!/usr/bin/ansible-playbook
 ---
-
 - hosts: all
+  
+  vars:
+    # Postgres 
+    PGDATA: /srv/pgdata
+    PGUSER: postgres
+    PGPASS: Postgres@123    
+    # IPs
+    EFM_VIP: 192.168.33.10
+    MASTER_IP: 192.168.33.11
+    SLAVE1_IP: 192.168.33.12
+    SLAVE2_IP: 192.168.33.13
+
+  pre_tasks:
+  - import_tasks: clean.yml
+    tags:
+    - never
+    - clean
+
   roles:
   - edb_efm
   

@@ -9,7 +9,9 @@
       host postgres {{ EFM_USER }} {{ SLAVE1_IP }}/32 md5
       host postgres {{ EFM_USER }} {{ SLAVE2_IP }}/32 md5
   notify: reload postgres
-    
+
+- meta: flush_handlers
+
 - name: efm.nodes file
   blockinfile:
     path: /etc/edb/efm-3.10/efm.nodes
@@ -50,12 +52,6 @@
     - { From: 'master.shutdown.as.failure=false', To: 'master.shutdown.as.failure=true'}
     - { From: 'ping.server.ip=8.8.8.8', To: 'ping.server.ip=192.168.33.1' }
     - { From: 'auto.resume.period=0', To: 'auto.resume.period=10' }
+    - { From: 'application.name=', To: 'application.name={{"node"+ansible_eth1.ipv4.address.split(".")[3]}}'}
+    - { From: 'update.physical.slots.period', To: 'update.physical.slots.period=10'}
   notify: restart efm
-
-- meta: flush_handlers
-
-- name: efm service started
-  systemd:
-    name: edb-efm-3.10
-    enabled: yes
-    state: started

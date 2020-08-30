@@ -4,14 +4,40 @@
   become: true
   when: ansible_eth1.ipv4.address == MASTER_IP
   tags: 
-  - config_streaming
-  - config_streaming_master
+  - pg_rep
+  - pg_rep_master
 
 - meta: flush_handlers
+  tags:
+  - pg_rep
 
 - import_tasks: config_pgslave12.yml
   become: true
   when: ansible_eth1.ipv4.address == SLAVE1_IP or ansible_eth1.ipv4.address == SLAVE2_IP
   tags:
-  - config_streaming
-  - config_streaming_slave
+  - pg_rep
+  - pg_rep_slave
+
+- name: synchronous standby names are updated in master's postgresql.conf file
+  become: true
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: "^#synchronous_standby_names = .*"
+    line: "synchronous_standby_names = 'any 1 ({{ 'node' + SLAVE1_IP.split('.')[3] }},{{ 'node' + SLAVE2_IP.split('.')[3] }})'"
+  when: REPLICATION_TYPE == 'synchronous' and ansible_eth1.ipv4.address == MASTER_IP
+  notify: restart postgres
+  tags: 
+  - pg_rep
+
+- name: update primary slot name
+  become: true
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: '{{item.From}}'
+    line: '{{item.To}}'
+  with_items:
+    - { From: "#primary_slot_name = ''", To: "primary_slot_name = '{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}'" }
+  when: REPLICATION_SLOT
+  notify: restart postgres
+  tags:
+  - pg_rep

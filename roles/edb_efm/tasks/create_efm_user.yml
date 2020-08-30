@@ -4,14 +4,14 @@
 - name: efm user created 
   postgresql_user:
     name: '{{ EFM_USER }}'
+#    role_attr_flags: REPLICATION
     password: '{{ EFM_USER_PASSWORD }}'
-  tags: config_efm
+  no_log: true
 
 - name: granted pg_read_all_settings to efm user
   postgresql_membership:
     group: pg_read_all_settings
     target_role: '{{ EFM_USER }}'
-  tags: config_efm
 
 - name: privileges assigned to efm user
   postgresql_privs:
@@ -26,4 +26,5 @@
     - pg_last_wal_replay_lsn()
     - pg_wal_replay_resume()  
     - pg_wal_replay_pause()
-  tags: config_efm
+#    - pg_create_physical_replication_slot()
+#    - pg_drop_replication_slot()

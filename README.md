@@ -2,12 +2,13 @@
 
 ### Check replication
 ```bash
+vagrant ssh master -c "psql -U postgres -c 'select * from pg_replication_slots;'"
 vagrant ssh master -c "psql -U postgres -xc 'select * from pg_stat_replication' "
 ```
 ### Check EFM Cluster Info
 ```bash
 vagrant ssh master -c "/usr/edb/efm-3.10/bin/efm cluster-status efm"
-vagrant ssh master -c "/usr/edb/efm-3.10/bin/efm promote efm -switchover"
+vagrant ssh master -c "sudo /usr/edb/efm-3.10/bin/efm promote efm -switchover"
 ```
 
 

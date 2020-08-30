@@ -21,7 +21,6 @@ Vagrant.configure("2") do |config|
       if index == cluster.size - 1 
         cfg.vm.provision "ansible" do |ansible|
           ansible.playbook = "playbook.yml"
-          ansible.extra_vars = "vars.yml"
           ansible.limit = "all,localhost"
         end 
       end
