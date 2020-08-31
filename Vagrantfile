@@ -1,23 +1,23 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-cluster = {
-  "node1" => { :ip => "192.168.33.11", 
-                :cpus => 1, :mem => 512, 
-                :pg_repl_role => 'master', 
-                :pg_repl_id => 1 },
-  "node2" => { :ip => "192.168.33.12", 
-                :cpus => 1, :mem => 512,
-                :pg_repl_role => 'standby', 
-                :pg_repl_id => 2 },
-  "node3" => { :ip => "192.168.33.13", 
-                :cpus => 1, :mem => 512,
-                :pg_repl_role => 'standby', 
-                :pg_repl_id => 3 }
+hosts = {
+  "db01" => { :ip => "192.168.33.11", 
+              :cpus => 1, :mem => 512, 
+              :pg_repl_role => 'master', 
+              :pg_repl_id => 1 },
+  "db02" => { :ip => "192.168.33.12", 
+              :cpus => 1, :mem => 512,
+              :pg_repl_role => 'standby', 
+              :pg_repl_id => 2 },
+  "db03" => { :ip => "192.168.33.13", 
+              :cpus => 1, :mem => 512,
+              :pg_repl_role => 'standby', 
+              :pg_repl_id => 3 }
 }
 
 Vagrant.configure("2") do |config|
-  cluster.each_with_index do | (hostname, info), index|
+  hosts.each_with_index do | (hostname, info), index|
     config.vm.define hostname do |cfg|
       cfg.vm.synced_folder ".", "/vagrant", disabled: true
       cfg.vm.provider :virtualbox do |vb, override|
@@ -27,12 +27,17 @@ Vagrant.configure("2") do |config|
         vb.name = hostname
         vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
       end
-      if index == cluster.size - 1 
+      # provision when last host is up
+      if index == hosts.size - 1 
         cfg.vm.provision "ansible" do |ansible|
           ansible.playbook = "playbook.yml"
-          ansible.limit = "all,localhost"
-          ansible.host_vars = cluster
-          ansible.groups = { 'pg_cluster' => ["node[1:3]"] }
+          # Uncomment to regenerate vagrant hostfile
+          # ansible.tags = 'ping'
+          ansible.limit = "all"
+          ansible.host_vars = hosts
+          ansible.groups = { 'pgcluster' => ["db0[1:3]"] }
+          # Optional EFM Virtual IP
+          ansible.extra_vars = { 'EFM_VIP' => "192.168.33.10" }
         end 
       end
     end

@@ -19,7 +19,7 @@
   - pg_rep
   - pg_rep_slave
 
-- import_tasks: set_synchronous_repl.yml
+- import_tasks: config_sync_repl.yml
   become: true
   when: REPLICATION_TYPE == 'synchronous'
   tags: 

@@ -1,25 +1,24 @@
 #!/usr/bin/ansible-playbook
 ---
-- hosts: pg_cluster
+- hosts: pgcluster
   
   vars:
     # Postgres 
     PGDATA: /srv/pgdata
     PGUSER: postgres
     PGPASS: Postgres@123    
-    # VIP
-    EFM_VIP: 192.168.33.10
     # replication
     REPLICATION_TYPE: synchronous
+    # EFM
+    EFM_VIP: 192.168.33.10
 
+  # Cleans previous configuration when "--tags clean"  
   pre_tasks:
+  - ping:
+    tags: ping  
   - import_tasks: clean.yml
     become: true
-    tags:
-    - never
-    - clean
+    tags: [ 'never', 'clean' ]
 
   roles:
   - postgres-edb_efm
-
-  
