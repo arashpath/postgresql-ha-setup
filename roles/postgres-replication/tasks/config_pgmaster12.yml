@@ -12,19 +12,19 @@
     path: "{{ PGDATA }}/pg_hba.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR REPLICATION"
     block: |
-      host replication {{ REPLICATION_USER }} {{ MASTER_IP }}/32 md5
-      host replication {{ REPLICATION_USER }} {{ SLAVE1_IP }}/32 md5
-      host replication {{ REPLICATION_USER }} {{ SLAVE2_IP }}/32 md5
+      {% for node_ip in pg_replication_nodes %}
+      host replication {{ REPLICATION_USER }} {{ node_ip }}/32 md5
+      {% endfor %}
   notify: reload postgres
 
 - name: replication slots created
   postgresql_slot:
-    name: "{{ item }}"
+    name: "{{ 'slot' + item }}"
     slot_type: physical
     state: present
   with_items:
-  - "{{ 'node' + SLAVE1_IP.split('.')[3] }}"
-  - "{{ 'node' + SLAVE2_IP.split('.')[3] }}"
+  - "{{ 'slot' + SLAVE1_IP.split('.')[3] }}"
+  - "{{ 'slot' + SLAVE2_IP.split('.')[3] }}"
   when: REPLICATION_SLOT
 
 - name: Change parameter in postgresql file

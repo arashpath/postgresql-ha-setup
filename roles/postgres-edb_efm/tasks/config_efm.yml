@@ -5,9 +5,9 @@
     path: "{{ PGDATA }}/pg_hba.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR EFM"
     block: |
-      host postgres {{ EFM_USER }} {{ MASTER_IP }}/32 md5
-      host postgres {{ EFM_USER }} {{ SLAVE1_IP }}/32 md5
-      host postgres {{ EFM_USER }} {{ SLAVE2_IP }}/32 md5
+      {% for node_ip in pg_replication_nodes %}
+      host postgres {{ EFM_USER }} {{ node_ip }}/32 md5
+      {% endfor %}
   notify: reload postgres
 
 - meta: flush_handlers
@@ -16,9 +16,9 @@
   blockinfile:
     path: /etc/edb/efm-3.10/efm.nodes
     block: |
-      {{ MASTER_IP }}:7800
-      {{ SLAVE1_IP }}:7800
-      {{ SLAVE2_IP }}:7800
+      {% for node_ip in pg_replication_nodes %}
+      {{ node_ip }}:7800
+      {% endfor %}
   notify: restart efm
 
 - name: get encrypted password
@@ -52,6 +52,6 @@
     - { From: 'master.shutdown.as.failure=false', To: 'master.shutdown.as.failure=true'}
     - { From: 'ping.server.ip=8.8.8.8', To: 'ping.server.ip=192.168.33.1' }
     - { From: 'auto.resume.period=0', To: 'auto.resume.period=10' }
-    - { From: 'application.name=', To: 'application.name={{"node"+ansible_eth1.ipv4.address.split(".")[3]}}'}
+    - { From: 'application.name=', To: 'application.name={{"node"+pg_repl_id|string}}'}
     - { From: 'update.physical.slots.period', To: 'update.physical.slots.period=10'}
   notify: restart efm

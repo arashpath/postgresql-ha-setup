@@ -1,8 +1,9 @@
 ---
 #file: roles/pg_stearming/tasks/main.ym
+
 - import_tasks: config_pgmaster12.yml
   become: true
-  when: ansible_eth1.ipv4.address == MASTER_IP
+  when: pg_repl_role == 'master'
   tags: 
   - pg_rep
   - pg_rep_master
@@ -13,17 +14,17 @@
 
 - import_tasks: config_pgslave12.yml
   become: true
-  when: ansible_eth1.ipv4.address == SLAVE1_IP 
-     or ansible_eth1.ipv4.address == SLAVE2_IP
+  when: pg_repl_role == 'standby'
   tags:
   - pg_rep
   - pg_rep_slave
 
-- import_tasks: config_sync.yml
+- import_tasks: set_synchronous_repl.yml
   become: true
   when: REPLICATION_TYPE == 'synchronous'
   tags: 
   - pg_rep
+  - pg_rep_sync
 
 - name: update primary slot name
   become: true
@@ -32,7 +33,7 @@
     regexp: '{{item.From}}'
     line: '{{item.To}}'
   with_items:
-    - { From: "#primary_slot_name = ''", To: "primary_slot_name = '{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}'" }
+    - { From: "#primary_slot_name = ''", To: "primary_slot_name = '{{ 'slot' + pg_repl_id|string }}'" }
   when: REPLICATION_SLOT
   notify: restart postgres
   tags:

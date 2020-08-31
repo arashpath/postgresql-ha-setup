@@ -27,24 +27,18 @@
       path: "{{ PGDATA }}"
       state: absent
   
-  - name: pg_basebackup from {{ MASTER_IP }} with replication slot
-    shell: 
-      cmd: | 
-        PGAPPNAME="{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}" \
-        PGPASSWORD="{{ REPLICATION_PASS }}" \
-        /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }} \
-          --slot="{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}" \
-          --host="{{ MASTER_IP }}" --port=5432 --username={{ REPLICATION_USER }}
+  - name: pg_basebackup cmd with replication slot
+    set_fact:
+      pg_basebackup_cmd: "{{ pg_basebackup_cmd + ' --slot=slot' + pg_repl_id|string }}" 
     when: REPLICATION_SLOT
 
-  - name: pg_basebackup from {{ MASTER_IP }}
+  - name: pg_basebackup from {{ pg_master_ip }}
     shell: 
       cmd: | 
-        PGAPPNAME="{{ 'node' + ansible_eth1.ipv4.address.split('.')[3] }}" \
+        PGAPPNAME="{{ 'node' + pg_repl_id|string }}" \
         PGPASSWORD="{{ REPLICATION_PASS }}" \
-        /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }} \
-          --host="{{ MASTER_IP }}" --port=5432 --username={{ REPLICATION_USER }}
-    when: not REPLICATION_SLOT  
+        {{ pg_basebackup_cmd }} --username={{ REPLICATION_USER }} \
+        --host="{{ pg_master_ip }}" --port=5432  
   
   - name: data directory are set
     file:

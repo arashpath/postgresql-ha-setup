@@ -13,7 +13,7 @@
 
 - import_tasks: create_efm_user.yml
   become: yes
-  when: ansible_eth1.ipv4.address == MASTER_IP
+  when: pg_repl_role == 'master'
   tags:
   - efm_config
 
@@ -28,9 +28,14 @@
   - efm_config
 
 - meta: flush_handlers
+  tags:
+  - efm_config
 
 - name: efm service started
+  become: true
   systemd:
     name: edb-efm-3.10
     enabled: yes
     state: started
+  tags:
+  - efm_config
