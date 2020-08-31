@@ -1,28 +1,24 @@
 ---
 
-- name: synchronous standby names updated in {{ MASTER_IP }}
-  become: true
+- name: synchronous_commit is set
   lineinfile:
     path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "^#synchronous_standby_names = .*"
-    line: "synchronous_standby_names = 'any 1 ({{ 'node' + SLAVE1_IP.split('.')[3] }},{{ 'node' + SLAVE2_IP.split('.')[3] }})'"
-  when: ansible_eth1.ipv4.address == MASTER_IP
+    regexp: '^#synchronous_commit = on'
+    line: synchronous_commit = on
+  when: REPLICATION_TYPE == 'synchronous'
   notify: restart postgres
 
-- name: synchronous standby names updated in {{ SLAVE1_IP }}
+- name: set synchronous_standby names
+  set_fact:
+    standby_names: "{{ ( ansible_play_hosts_all | 
+      map('extract', hostvars, ['pg_repl_id']) | list | 
+      difference([pg_repl_id]) ) | join(',') | 
+      regex_replace('([0-9]{1})', 'node\\1') }}"
+    
+- name: synchronous standby names
   become: true
   lineinfile:
     path: "{{ PGDATA }}/postgresql.conf"
     regexp: "^#synchronous_standby_names = .*"
-    line: "synchronous_standby_names = 'any 1 ({{ 'node' + SLAVE2_IP.split('.')[3] }},{{ 'node' + MASTER_IP.split('.')[3] }})'"
-  when: ansible_eth1.ipv4.address == SLAVE1_IP
-  notify: restart postgres
-
-- name: synchronous standby names updated in {{ SLAVE2_IP }}
-  become: true
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "^#synchronous_standby_names = .*"
-    line: "synchronous_standby_names = 'any 1 ({{ 'node' + MASTER_IP.split('.')[3] }},{{ 'node' + SLAVE1_IP.split('.')[3] }})'"
-  when: ansible_eth1.ipv4.address == SLAVE2_IP
+    line: "synchronous_standby_names = 'any 1 ({{ standby_names }})'"
   notify: restart postgres
