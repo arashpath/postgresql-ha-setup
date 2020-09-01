@@ -2,6 +2,7 @@
 # file: roles/edb_efm/default/main.yml
 edb_install_type: offline
 
+EFM_VERSION: '3.10'
 EFM_USER: efm
 EFM_USER_PASSWORD: efm@123
 NOTIFICATION_EMAIL: fssai.cdc@gmail.com

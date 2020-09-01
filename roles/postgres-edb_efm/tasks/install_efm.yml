@@ -7,20 +7,20 @@
     
 - name: efm installed
   yum:
-    name: edb-efm310
+    name: "edb-efm{{ EFM_VERSION | replace('.','') }}"
     state: present
 
 - name: efm config files .properties & .node copied
   copy:
     src:  "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: 0644
+    mode: '0644'
     owner: efm
     group: efm
     remote_src: yes
     force: no
   with_items:
-  - src: /etc/edb/efm-3.10/efm.properties.in
-    dest: /etc/edb/efm-3.10/efm.properties
-  - src: /etc/edb/efm-3.10/efm.nodes.in
-    dest: /etc/edb/efm-3.10/efm.nodes      
+  - src: "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties.in"
+    dest: "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties"
+  - src: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes.in"
+    dest: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"      

@@ -14,7 +14,7 @@
 
 - name: efm.nodes file
   blockinfile:
-    path: /etc/edb/efm-3.10/efm.nodes
+    path: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"
     block: |
       {% for node_ip in pg_replication_nodes %}
       {{ node_ip }}:7800
@@ -22,36 +22,49 @@
   notify: restart efm
 
 - name: get encrypted password
-  shell: /usr/edb/efm-3.10/bin/efm encrypt efm --from-env
+  shell: /usr/edb/efm-{{ EFM_VERSION }}/bin/efm encrypt efm --from-env
   environment:
     EFMPASS: '{{ EFM_USER_PASSWORD }}'
   register: pass_opt
   check_mode: no
   changed_when: false
 
-- name: configure efm.properties
+- name: configure efm.properties  
   lineinfile:
-    path: /etc/edb/efm-3.10/efm.properties
-    regexp: "{{ item.From }}"
-    line: "{{ item.To }}"
+    path: "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties"
+    regexp: "{{ item.name + '=' }}"
+    line: "{{ item.name + '=' + item.value|string }}"
+    state: present
   with_items:
-    - { From: 'db.user=', To: 'db.user={{ EFM_USER }}' } 
-    - { From: 'db.password.encrypted=', To: 'db.password.encrypted={{ pass_opt.stdout }}'}
-    - { From: 'db.port=', To: 'db.port=5432'}
-    - { From: 'db.database=', To: 'db.database=postgres'}
-    - { From: 'db.service.owner=', To: 'db.service.owner=postgres'}
-    - { From: 'db.service.name=', To: 'db.service.name=postgresql-12'}
-    - { From: 'db.data.dir=', To: 'db.data.dir={{ PGDATA }}/'}
-    - { From: 'user.email=', To: 'user.email={{NOTIFICATION_EMAIL}}'}
-    - { From: 'is.witness=', To: 'is.witness=false'}
-    - { From: 'auto.allow.hosts=false', To: 'auto.allow.hosts=true'}
-    - { From: 'stable.nodes.file=false', To: 'stable.nodes.file=true'}
-    - { From: 'db.bin=', To: 'db.bin=/usr/pgsql-12/bin'}
-    - { From: 'db.recovery.dir=', To: 'db.recovery.dir={{ PGDATA }}/'}
-    - { From: 'bind.address=', To: 'bind.address={{ ansible_eth1.ipv4.address }}:7800'}
-    - { From: 'master.shutdown.as.failure=false', To: 'master.shutdown.as.failure=true'}
-    - { From: 'ping.server.ip=8.8.8.8', To: 'ping.server.ip=192.168.33.1' }
-    - { From: 'auto.resume.period=0', To: 'auto.resume.period=10' }
-    - { From: 'application.name=', To: 'application.name={{"node"+pg_repl_id|string}}'}
-    - { From: 'update.physical.slots.period', To: 'update.physical.slots.period=10'}
+    - { name: db.user, value: "{{ EFM_USER }}" }
+    - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}" }
+    - { name: db.port, value: "5432" }
+    - { name: db.database, value: "postgres" }
+    - { name: db.service.owner, value: "postgres" }
+    - { name: db.service.name, value: "postgresql-12" }
+    - { name: db.data.dir, value: "{{ PGDATA }}" }
+    - { name: db.recovery.dir, value: "{{ PGDATA }}" }
+    - { name: user.email, value: "{{ NOTIFICATION_EMAIL }}" }
+    - { name: is.witness, value: false }
+    - { name: auto.allow.hosts, value: true }
+    - { name: stable.nodes.file, value: true }
+    - { name: db.bin, value: "/usr/pgsql-12/bin" }
+    - { name: bind.address, value: "{{ ansible_eth1.ipv4.address }}:7800" }
+    - { name: master.shutdown.as.failure, value: true }
+    - { name: ping.server.ip, value: '192.168.33.1' }
+    - { name: auto.resume.period, value: 10 }
+    - { name: application.name, value: "{{'node'+pg_repl_id|string}}" }
+    - { name: update.physical.slots.period, value: "10" }
   notify: restart efm
+
+- name: configure vip in efm.properties
+  lineinfile:
+    path: "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties"
+    regexp: "{{ item.name + '=' }}"
+    line: "{{ item.name + '=' + item.value|string }}"
+  with_items:
+    - { name: virtual.ip, value: "{{ EFM_VIP }}" }
+    - { name: virtual.ip.interface, value: "eth1" }
+    - { name: virtual.ip.prefix, value: 24 }
+  notify: restart efm
+  when: EFM_VIP is defined
