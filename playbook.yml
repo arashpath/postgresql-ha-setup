@@ -12,10 +12,14 @@
     # EFM
     EFM_VIP: 192.168.33.10
 
-  # Cleans previous configuration when "--tags clean"  
+  
   pre_tasks:
-  - ping:
-    tags: ping  
+  # Simple ping to check
+  - timezone:
+      name: 'Asia/Kolkata'
+    become: true
+    tags: [ 'time' ]
+  # Cleans previous configuration when "--tags clean"
   - import_tasks: clean.yml
     become: true
     tags: [ 'never', 'clean' ]
