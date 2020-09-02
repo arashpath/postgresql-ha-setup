@@ -4,7 +4,7 @@
 - name: efm user created 
   postgresql_user:
     name: '{{ EFM_USER }}'
-#    role_attr_flags: REPLICATION
+    role_attr_flags: REPLICATION
     password: '{{ EFM_USER_PASSWORD }}'
   no_log: true
 
