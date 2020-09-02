@@ -2,14 +2,18 @@
 #file: roles/postgres-replication/vars/main.yml
 
 # master ip
-pg_master_ip: "{% for node in ansible_play_hosts_all %}\
+pg_master_ip: "{% for node in groups[PG_REP_GRP] %}\
   {% if hostvars[node].pg_repl_role == 'master' %}\
-  {{ hostvars[node].ansible_eth1.ipv4.address }}\
+  {{ hostvars[node].ip }}\
   {% endif %}{% endfor %}"
 
-# list of replication nodes
-pg_replication_nodes: "{{ ansible_play_hosts_all | 
-  map('extract', hostvars, ['ansible_eth1', 'ipv4', 'address']) | list }}"
+# list of replication nodes ips
+pg_repl_nodes_ips: "{{ groups[PG_REP_GRP] | 
+  map('extract', hostvars, ['ip']) | list }}"
+
+# list of replication nodes ids
+pg_repl_nodes_ids: "{{ groups[PG_REP_GRP] | 
+  map('extract', hostvars, ['pg_repl_id']) | list }}"
 
 # pg_basebackup command
 pg_basebackup_cmd: /usr/pgsql-12/bin/pg_basebackup -R -D {{ PGDATA }}

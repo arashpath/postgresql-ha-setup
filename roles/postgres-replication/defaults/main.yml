@@ -1,6 +1,14 @@
 ---
 # file: roles/pg_straming/defaults/main.yml
 
+# Serverdetails
+
+# Ansible group name containing postgres servers 
+PG_REP_GRP: '' # if this is blank then, followings must be defines
+               # pg_master_ip: # Masters IP
+               # pg_repl_nodes_ips: # list of all nodes ips
+               # pg_repl_nodes_ids: # list of all nodes ids
+
 # Replication
 REPLICATION_SLOT: False          #/True
 REPLICATION_TYPE: synchronous    #/asynchronous

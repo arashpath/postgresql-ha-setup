@@ -12,20 +12,20 @@
     path: "{{ PGDATA }}/pg_hba.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR REPLICATION"
     block: |
-      {% for node_ip in pg_replication_nodes %}
+      {% for node_ip in pg_repl_nodes_ips %}
       host replication {{ REPLICATION_USER }} {{ node_ip }}/32 md5
       {% endfor %}
   notify: reload postgres
 
-- name: replication slots created
-  postgresql_slot:
-    name: "{{ 'slot' + item }}"
-    slot_type: physical
-    state: present
-  with_items:
-  - "{{ 'slot' + SLAVE1_IP.split('.')[3] }}"
-  - "{{ 'slot' + SLAVE2_IP.split('.')[3] }}"
-  when: REPLICATION_SLOT
+#- name: replication slots created
+#  postgresql_slot:
+#    name: "{{ 'slot' + item }}"
+#    slot_type: physical
+#    state: present
+#  with_items:
+#  - "{{ 'slot' + SLAVE1_IP.split('.')[3] }}"
+#  - "{{ 'slot' + SLAVE2_IP.split('.')[3] }}"
+#  when: REPLICATION_SLOT
 
 - name: Change parameter in postgresql file
   lineinfile:
@@ -43,17 +43,4 @@
     - { From: "#max_sync_workers_per_subscription = 2", To: "max_sync_workers_per_subscription = 2" }
     - { From: "#listen_addresses = 'localhost'", To: "listen_addresses = '*'" } 
     - { From: "max_connections = 100", To: "max_connections = 200" }
-    - { From: "#archive_mode = off", To: "archive_mode = on" }
-    - { From: "#archive_command = ''", To: "archive_command = 'cp %p /backup/%f'"}
-    - { From: "^#promote_trigger_file = ''", To: "promote_trigger_file = '{{ PGDATA }}/waltrigger'" }
-    - { From: "^#restore_command = ''", To: "restore_command = 'cp /backup/%f %p'" }
-    - { From: "#recovery_target_timeline = 'latest'", To: "recovery_target_timeline = 'latest'" }
-  notify: restart postgres
-
-- name: synchronous_commit setting if replication type synchronous
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: '^#synchronous_commit = on'
-    line: synchronous_commit = on
-  when: REPLICATION_TYPE == 'synchronous'
   notify: restart postgres

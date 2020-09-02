@@ -1,7 +1,14 @@
 ---
 #file: roles/pg_stearming/tasks/main.ym
 
-- import_tasks: config_pgmaster12.yml
+- name: debug
+  block:
+  - debug: var=pg_master_ip
+  - debug: var=pg_repl_nodes_ips
+  - debug: var=pg_repl_nodes_ids
+  tags: ['debug','never']  
+
+- import_tasks: config_pgmaster.yml
   become: true
   when: pg_repl_role == 'master'
   tags: 
@@ -12,7 +19,7 @@
   tags:
   - pg_rep
 
-- import_tasks: config_pgslave12.yml
+- import_tasks: config_pgslave.yml
   become: true
   when: pg_repl_role == 'standby'
   tags:

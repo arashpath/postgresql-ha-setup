@@ -10,15 +10,13 @@
 
 - name: set synchronous_standby names
   set_fact:
-    standby_names: "{{ ( ansible_play_hosts_all | 
-      map('extract', hostvars, ['pg_repl_id']) | list | 
-      difference([pg_repl_id]) ) | join(',') | 
+    standby_names: "{{ pg_repl_nodes_ids | join(',') | 
       regex_replace('([0-9]{1})', 'node\\1') }}"
     
 - name: synchronous standby names
   become: true
   lineinfile:
     path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "^#synchronous_standby_names = .*"
+    regexp: "^#*synchronous_standby_names = .*"
     line: "synchronous_standby_names = 'any 1 ({{ standby_names }})'"
   notify: restart postgres

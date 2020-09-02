@@ -35,9 +35,10 @@ Vagrant.configure("2") do |config|
           # ansible.tags = 'clean' # Clean postgres setup
           ansible.limit = "all" 
           ansible.host_vars = hosts
-          ansible.groups = { 'pgcluster' => ["db0[1:3]"] }
+          ansible.groups = { 'pgcluster' => ['db0[1:3]'] }
           # Optional EFM Virtual IP
-          ansible.extra_vars = { 'EFM_VIP' => "192.168.33.10" }
+          ansible.extra_vars = { 'EFM_VIP' => '192.168.33.10', 
+                                 'PG_REP_GRP' => 'pgcluster' }
         end 
       end
     end

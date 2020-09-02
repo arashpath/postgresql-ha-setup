@@ -32,9 +32,8 @@ vagrant ssh db01 -c "psql -U postgres -c 'select * from pg_replication_slots;'"
   vagrant ssh db02 -c "watch /usr/edb/efm-3.10/bin/efm cluster-status efm"
   # Start master 
   vagrant up db01
-  # master must be recreated using pg_backup
-  ./playbook.yml --tags clean  --limit db01
-  ./playbook.yml --limit db01 -e "pg_repl_role=standby pg_master_ip=192.168.33.12"
+  # master must be recreated as stanby using pg_backup
+  ./playbook.yml --limit db01 -t pg_rep,efm_config -e "pg_repl_role=standby pg_master_ip=192.168.33.12" 
   ```
 
 

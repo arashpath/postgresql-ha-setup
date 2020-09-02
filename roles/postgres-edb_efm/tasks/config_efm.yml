@@ -5,7 +5,7 @@
     path: "{{ PGDATA }}/pg_hba.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR EFM"
     block: |
-      {% for node_ip in pg_replication_nodes %}
+      {% for node_ip in pg_repl_nodes_ips %}
       host postgres {{ EFM_USER }} {{ node_ip }}/32 md5
       {% endfor %}
   notify: reload postgres
@@ -16,7 +16,7 @@
   blockinfile:
     path: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"
     block: |
-      {% for node_ip in pg_replication_nodes %}
+      {% for node_ip in pg_repl_nodes_ips %}
       {{ node_ip }}:7800
       {% endfor %}
   notify: restart efm
@@ -49,7 +49,7 @@
     - { name: auto.allow.hosts, value: true }
     - { name: stable.nodes.file, value: true }
     - { name: db.bin, value: "/usr/pgsql-12/bin" }
-    - { name: bind.address, value: "{{ ansible_eth1.ipv4.address }}:7800" }
+    - { name: bind.address, value: "{{ ip }}:7800" }
     - { name: master.shutdown.as.failure, value: true }
     - { name: ping.server.ip, value: '192.168.33.1' }
     - { name: auto.resume.period, value: 10 }

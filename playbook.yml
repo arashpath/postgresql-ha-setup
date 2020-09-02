@@ -8,6 +8,7 @@
     PGUSER: postgres
     PGPASS: Postgres@123    
     # replication
+    PG_REP_GRP: pgcluster
     REPLICATION_TYPE: synchronous
     # EFM
     EFM_VIP: 192.168.33.10
