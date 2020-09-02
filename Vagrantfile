@@ -31,8 +31,8 @@ Vagrant.configure("2") do |config|
       if index == hosts.size - 1 
         cfg.vm.provision "ansible" do |ansible|
           ansible.playbook = "playbook.yml"
-          # ansible.tags = 'time'  # Just set timezone
-          # ansible.tags = 'clean' # Clean postgres setup
+          # ansible.tags = 'clean' # to 'clean' postgres setup 
+                                   # 'time' Just set timezone
           ansible.limit = "all" 
           ansible.host_vars = hosts
           ansible.groups = { 'pgcluster' => ['db0[1:3]'] }

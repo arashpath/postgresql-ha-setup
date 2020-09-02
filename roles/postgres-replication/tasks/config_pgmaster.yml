@@ -17,15 +17,13 @@
       {% endfor %}
   notify: reload postgres
 
-#- name: replication slots created
-#  postgresql_slot:
-#    name: "{{ 'slot' + item }}"
-#    slot_type: physical
-#    state: present
-#  with_items:
-#  - "{{ 'slot' + SLAVE1_IP.split('.')[3] }}"
-#  - "{{ 'slot' + SLAVE2_IP.split('.')[3] }}"
-#  when: REPLICATION_SLOT
+- name: replication slots created
+  postgresql_slot:
+    name: "{{ 'slot' + item|string }}"
+    slot_type: physical
+    state: present
+  with_items: "{{ pg_repl_nodes_ids |difference([pg_repl_id]) }}"
+  when: REPLICATION_SLOT
 
 - name: Change parameter in postgresql file
   lineinfile:

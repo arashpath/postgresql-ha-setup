@@ -1,0 +1,14 @@
+---
+
+- name: Change parameter in postgresql file
+  lineinfile:
+    path: "{{ PGDATA }}/postgresql.conf"
+    regexp: '{{item.From}}'
+    line: '{{item.To}}'
+  with_items:
+    - { From: "#archive_mode = off", To: "archive_mode = on" }
+    - { From: "#archive_command = ''", To: "archive_command = 'cp %p /backup/%f'"}
+    - { From: "^#promote_trigger_file = ''", To: "promote_trigger_file = '{{ PGDATA }}/waltrigger'" }
+    - { From: "^#restore_command = ''", To: "restore_command = 'cp /backup/%f %p'" }
+    - { From: "#recovery_target_timeline = 'latest'", To: "recovery_target_timeline = 'latest'" }
+  notify: restart postgres

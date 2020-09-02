@@ -11,6 +11,6 @@ PG_REP_GRP: '' # if this is blank then, followings must be defines
 
 # Replication
 REPLICATION_SLOT: False          #/True
-REPLICATION_TYPE: synchronous    #/asynchronous
+REPLICATION_TYPE: asynchronous   #/synchronous
 REPLICATION_USER: replicator
 REPLICATION_PASS: raplicator@123

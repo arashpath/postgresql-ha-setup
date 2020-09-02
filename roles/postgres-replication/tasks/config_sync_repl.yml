@@ -1,22 +1,15 @@
 ---
 
-- name: synchronous_commit is set
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: '^#synchronous_commit = on'
-    line: synchronous_commit = on
-  when: REPLICATION_TYPE == 'synchronous'
-  notify: restart postgres
-
 - name: set synchronous_standby names
   set_fact:
     standby_names: "{{ pg_repl_nodes_ids | join(',') | 
       regex_replace('([0-9]{1})', 'node\\1') }}"
     
-- name: synchronous standby names
+- name: synchronous commit and standby names
   become: true
-  lineinfile:
-    path: "{{ PGDATA }}/postgresql.conf"
-    regexp: "^#*synchronous_standby_names = .*"
-    line: "synchronous_standby_names = 'any 1 ({{ standby_names }})'"
-  notify: restart postgres
+  postgresql_set: 
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  with_items:
+  - { name: synchronous_commit, value: "on" }
+  - { name: synchronous_standby_names, value: "any 1 ({{standby_names}})" }

@@ -1,6 +1,7 @@
 #!/usr/bin/ansible-playbook
 ---
 - hosts: pgcluster
+  gather_facts: no
   
   vars:
     # Postgres 
@@ -9,11 +10,11 @@
     PGPASS: Postgres@123    
     # replication
     PG_REP_GRP: pgcluster
+    REPLICATION_SLOT: True 
     REPLICATION_TYPE: synchronous
     # EFM
     EFM_VIP: 192.168.33.10
 
-  
   pre_tasks:
   # Simple ping to check
   - timezone:
