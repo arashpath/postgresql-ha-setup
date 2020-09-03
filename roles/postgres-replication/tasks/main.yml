@@ -29,16 +29,24 @@
 - import_tasks: config_sync_repl.yml
   become: true
   when: REPLICATION_TYPE == 'synchronous'
-  tags: 
+  tags:  
   - pg_rep
   - pg_rep_sync
 
-
-- name: synchronous commit and standby names
+- name: update connection for replication slots
   become: true
   postgresql_set: 
-    name: primary_slot_name
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  with_items:
+  - name: primary_slot_name
     value: "{{ 'slot' + pg_repl_id|string }}"
+  - name: primary_conninfo
+    value: >-
+      user={{ REPLICATION_USER }} password={{ REPLICATION_PASS }} 
+      host={{ pg_master_ip }} port=5432 application_name={{ 'node' + pg_repl_id|string  }}
+      sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any
   when: REPLICATION_SLOT
+  notify: restart postgres
   tags:
     - pg_rep

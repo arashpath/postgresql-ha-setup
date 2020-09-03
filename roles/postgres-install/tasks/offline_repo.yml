@@ -14,15 +14,9 @@
 
 - name: postgres repo copied
   unarchive:
-    src: pgrepo_centos7.tgz
+    src: pgrepo.tgz
     dest: /opt/
     creates: /opt/pgrepo/repodata/repomd.xml
-
-#  - name: Copy Postgres repo
-#    synchronize:
-#      src: ../repos/pgrepo
-#      dest: /opt
-#      compress: no
 
 - name: pg repo added
   copy:

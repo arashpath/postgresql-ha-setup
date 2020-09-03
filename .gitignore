@@ -1,4 +1,4 @@
 .vagrant/
 .vscode/
-files/
 more/
+*.tgz
