@@ -1,12 +1,6 @@
 ---
 #file: roles/pg_install/tasks/main.yml
 
-- import_tasks: offline_repo.yml
-  become: yes
-  when: pg_install_type == 'offline'
-  tags: 
-  - pg_repo
-
 - import_tasks: install_pgdb12.yml
   become: yes
   tags: pg_install

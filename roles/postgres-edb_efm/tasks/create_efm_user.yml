@@ -26,5 +26,3 @@
     - pg_last_wal_replay_lsn()
     - pg_wal_replay_resume()  
     - pg_wal_replay_pause()
-#    - pg_create_physical_replication_slot()
-#    - pg_drop_replication_slot()

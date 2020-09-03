@@ -1,4 +1,4 @@
-FROM centos:7.8.2003
+FROM centos:7
 RUN yum install -y createrepo
 WORKDIR /repos
 ARG DLREPO="yum install -y --downloadonly --downloaddir=/repos"
@@ -18,7 +18,7 @@ ARG EDB_USER
 ARG EDB_PASS
 RUN sed -i "s@<username>:<password>@${EDB_USER}:${EDB_PASS}@" /etc/yum.repos.d/edb.repo
 RUN ${DLREPO} edb-bart edb-pem edb-efm310 edb-efm40 
-
+RUN ${DLREPO} python-pip python-psycopg2
 
 # Clean and create fresh repo
 RUN rm -rf /repos/repodata 

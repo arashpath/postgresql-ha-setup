@@ -14,17 +14,17 @@
 
 - name: postgres repo copied
   unarchive:
-    src: pgrepo.tgz
+    src: repos.tgz
     dest: /opt/
-    creates: /opt/pgrepo/repodata/repomd.xml
+    creates: /opt/repos/repodata/repomd.xml
 
 - name: pg repo added
   copy:
-    dest: /etc/yum.repos.d/local-pg.repo
+    dest: /etc/yum.repos.d/local.repo
     mode: 0644
     content: | 
-      [pg12-local]
-      name=PostgreSQL 12 Local Repo
-      baseurl=file:///opt/pgrepo
+      [local-repo]
+      name=Local Repo
+      baseurl=file:///opt/repos
       enabled=1
       gpgcheck=0

@@ -21,8 +21,11 @@
       name: 'Asia/Kolkata'
     become: true
     tags: [ 'time' ]
+  - import_tasks: tasks/local_repo.yml
+    become: true
+    tags: ['repo']
   # Cleans previous configuration when "--tags clean"
-  - import_tasks: clean.yml
+  - import_tasks: tasks/clean.yml
     become: true
     tags: [ 'never', 'clean' ]
 
