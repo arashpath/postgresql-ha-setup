@@ -50,7 +50,7 @@
     - { name: stable.nodes.file, value: true }
     - { name: db.bin, value: "/usr/pgsql-12/bin" }
     - { name: bind.address, value: "{{ ip }}:7800" }
-    - { name: master.shutdown.as.failure, value: true }
+    - { name: primary.shutdown.as.failure, value: true }
     - { name: ping.server.ip, value: '192.168.33.1' }
     - { name: auto.resume.period, value: 10 }
     - { name: application.name, value: "{{'node'+pg_repl_id|string}}" }

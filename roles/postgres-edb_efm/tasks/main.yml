@@ -24,7 +24,7 @@
 - name: efm service started
   become: true
   systemd:
-    name: edb-efm-3.10
+    name: "edb-efm-{{ EFM_VERSION }}"
     enabled: yes
     state: started
   tags:
