@@ -1,5 +1,14 @@
 # Postgresql-12 HA Setup
 
+## Prerequisite
+- Create a localrepo `repos.tgz` with required rpms
+  ```bash
+  cd files/
+  echo "EDB_USER='<edb-username>'
+  EDB_PASS='<edb-repo-password>'" > .env
+  docker-compose up --build
+  ```
+## Vagrant Setup
 ### Setup cluster
 ```bash
 vagrant up
@@ -36,7 +45,12 @@ vagrant ssh db01 -c "psql -U postgres -c 'select * from pg_replication_slots;'"
   ./playbook.yml --limit db01 -t pg_rep,efm_config -e "pg_repl_role=standby pg_master_ip=192.168.33.12" 
   ```
 
-
+# TO-DO
+- [x] Install PostgreSQL12
+- [x] Setup Streaming Replication
+- [x] Setup EFM 
+- [] Setup PEM
+- [] Setup BART
 
 # Ref.
 - https://www.enterprisedb.com/edb-docs/d/edb-postgres-failover-manager/user-guides/high-availability-scalability-guide/4.0/architecture.html

@@ -1,6 +1,6 @@
 ---
-#file: roles/pg_install/tasks/main.yml
+#file: roles/postgres-install/tasks/main.yml
 
-- import_tasks: install_pgdb12.yml
+- import_tasks: install_pgdb.yml
   become: yes
   tags: pg_install

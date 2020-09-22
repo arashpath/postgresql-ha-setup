@@ -5,7 +5,7 @@
     path: "{{ PGDATA }}/pg_hba.conf"
     marker: "# {mark} ANSIBLE MANAGED BLOCK FOR EFM"
     block: |
-      {% for node_ip in pg_repl_nodes_ips %}
+      {% for node_ip in efm_nodes_ips %}
       host postgres {{ EFM_USER }} {{ node_ip }}/32 md5
       {% endfor %}
   notify: reload postgres
@@ -16,7 +16,7 @@
   blockinfile:
     path: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"
     block: |
-      {% for node_ip in pg_repl_nodes_ips %}
+      {% for node_ip in efm_nodes_ips %}
       {{ node_ip }}:7800
       {% endfor %}
   notify: restart efm
@@ -41,14 +41,14 @@
     - { name: db.port, value: "5432" }
     - { name: db.database, value: "postgres" }
     - { name: db.service.owner, value: "postgres" }
-    - { name: db.service.name, value: "postgresql-12" }
+    - { name: db.service.name, value: "postgresql-{{ PGVER }}" }
     - { name: db.data.dir, value: "{{ PGDATA }}" }
     - { name: db.recovery.dir, value: "{{ PGDATA }}" }
     - { name: user.email, value: "{{ NOTIFICATION_EMAIL }}" }
     - { name: is.witness, value: false }
     - { name: auto.allow.hosts, value: true }
     - { name: stable.nodes.file, value: true }
-    - { name: db.bin, value: "/usr/pgsql-12/bin" }
+    - { name: db.bin, value: "/usr/pgsql-{{ PGVER }}/bin" }
     - { name: bind.address, value: "{{ ip }}:7800" }
     - { name: primary.shutdown.as.failure, value: true }
     - { name: ping.server.ip, value: '192.168.33.1' }

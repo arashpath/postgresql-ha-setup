@@ -1,0 +1,16 @@
+---  
+# Postgres 
+PGVER: 12
+PGDATA: /srv/pgdata
+PGUSER: postgres
+PGPASS: Postgres@123   
+
+# replication
+PG_REP_GRP: pg_repl
+#REPLICATION_SLOT: True 
+#REPLICATION_TYPE: synchronous
+
+# EFM
+EFM_VERSION: '4.0'
+EFM_VIP: 192.168.33.10
+EFM_GRP: pg_repl

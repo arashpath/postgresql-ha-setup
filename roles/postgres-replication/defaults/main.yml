@@ -2,12 +2,16 @@
 # file: roles/pg_straming/defaults/main.yml
 
 # Serverdetails
+PGVER: 12
+PGDATA: /var/lib/pgsql/{{ PGVER }}/data
+PGUSER: postgres
+PGPASS: Postgres@123
 
 # Ansible group name containing postgres servers 
-PG_REP_GRP: '' # if this is blank then, followings must be defines
-               # pg_master_ip: # Masters IP
-               # pg_repl_nodes_ips: # list of all nodes ips
-               # pg_repl_nodes_ids: # list of all nodes ids
+PG_REP_GRP: 'pg_repl' # if this is blank then, followings must be defines
+                      # pg_master_ip: # Masters IP
+                      # pg_repl_nodes_ips: # list of all nodes ips
+                      # pg_repl_nodes_ids: # list of all nodes ids
 
 # Replication
 REPLICATION_SLOT: False          #/True

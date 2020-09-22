@@ -1,2 +1,2 @@
-dependencies:
-- postgres-replication
+dependencies: []
+#- postgres-replication

@@ -4,12 +4,12 @@
 - name: restart postgres
   become: true
   systemd:
-    name: postgresql-12
+    name: "postgresql-{{ PGVER }}"
     state: restarted
 
 # Reload Postgres
 - name: reload postgres
   become: true
   systemd:
-    name: postgresql-12
+    name: "postgresql-{{ PGVER }}"
     state: reloaded

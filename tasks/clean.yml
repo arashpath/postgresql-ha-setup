@@ -1,32 +1,30 @@
-#!/usr/bin/ansible-playbook
+#file: tasks/clean.yml
 ---
-#- hosts: all
-#  gather_facts: no
-#  become: true
-#  vars_files: vars.yml
-#  tasks:
 
-  - systemd:
-      name: edb-efm-3.10
-      state: stopped
+# Clean EFM
+- systemd:
+    name: "edb-efm-{{ EFM_VERSION }}"
+    state: stopped
+- file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"
+  - "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties"
+  - "/var/log/efm-{{ EFM_VERSION }}/efm.log"
+  - "/var/log/efm-{{ EFM_VERSION }}/startup-efm.log"
 
-  - file:
-      path: "{{ item }}"
-      state: absent
-    with_items:
-    - /etc/edb/efm-3.10/efm.nodes
-    - /etc/edb/efm-3.10/efm.properties
-    - /var/log/efm-3.10/efm.log
-    - /var/log/efm-3.10/startup-efm.log
-  
-  - systemd:
-      name: postgresql-12
-      state: stopped
+# Clean PostgreSQL
+- systemd:
+    name: "postgresql-{{ PGVER }}"
+    state: stopped
+- file:
+    path: "{{ PGDATA }}"
+    state: absent
 
-  - file:
-      path: "{{ item }}"
-      state: absent
-    with_items:
-    - "{{ PGDATA }}"
-    - "/backup"
+
+#  with_items:
+#  - "{{ PGDATA }}"
+#  - "/backup"
+#    - "/opt/repos/repodata"
       

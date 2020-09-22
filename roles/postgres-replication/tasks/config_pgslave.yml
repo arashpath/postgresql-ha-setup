@@ -19,7 +19,7 @@
 
   - name: db stopped
     systemd:
-      name: postgresql-12
+      name: "postgresql-{{ PGVER }}"
       state: stopped
   
   - name: pgdata directory deleted
@@ -50,7 +50,7 @@
   
   - name: db started
     systemd:
-     name: postgresql-12
+     name: "postgresql-{{ PGVER }}"
      state: started
      enabled: yes
 

@@ -1,13 +1,13 @@
 ---
-#file: roles/pg_install/tasks/install_pgdb12.yml
+#file: roles/postgres-install/tasks/install_pgdb{{ PGVER }}.yml
 
-- name: Install postgres 12 server
+- name: Install postgres {{ PGVER }} server
   yum:
     name: "{{ packages }}"
   vars:
     packages: 
-      - postgresql12-server
-      - postgresql12
+      - "postgresql{{ PGVER }}-server"
+      - "postgresql{{ PGVER }}"
     state: present   
       
 - name: Install python pip and psycopg2
@@ -17,26 +17,26 @@
 
 - name: Copy postgres systemd file
   copy:
-    dest: /etc/systemd/system/postgresql-12.service  
-    src: /usr/lib/systemd/system/postgresql-12.service
+    dest: "/etc/systemd/system/postgresql-{{ PGVER }}.service"  
+    src: "/usr/lib/systemd/system/postgresql-{{ PGVER }}.service"
     mode: preserve
     force: no
     remote_src: yes
 
 - name: set postgres data path
   replace:
-    path: /etc/systemd/system/postgresql-12.service
+    path: "/etc/systemd/system/postgresql-{{ PGVER }}.service"
     regexp: ^Environment=PGDATA=.+$  
     replace: "Environment=PGDATA={{ PGDATA }}/" 
 
-- name: Configure postgres 12
+- name: Configure postgres {{ PGVER }}
   shell:
     creates: "{{ PGDATA }}/postgresql.conf" 
-    cmd: /usr/pgsql-12/bin/postgresql-12-setup initdb     
-#  - name: Configure postgres 12 if default user is not postgres 
+    cmd: /usr/pgsql-{{ PGVER }}/bin/postgresql-{{ PGVER }}-setup initdb     
+#  - name: Configure postgres {{ PGVER }} if default user is not postgres 
 #    shell:
 #      creates: "{{ PGDATA }}/postgresql.conf" 
-#      cmd: sudo /sbin/runuser -l postgres -c '/usr/pgsql-12/bin/initdb -U {{PGUSER}} -D {{ PGDATA }}'
+#      cmd: sudo /sbin/runuser -l postgres -c '/usr/pgsql-{{ PGVER }}/bin/initdb -U {{PGUSER}} -D {{ PGDATA }}'
 #      warn: false
 #    when: PGUSER != 'postgres'
 
@@ -58,7 +58,7 @@
 
 - name: Start DB Service
   systemd: 
-     name: postgresql-12
+     name: "postgresql-{{ PGVER }}"
      state: started
      enabled: yes
 

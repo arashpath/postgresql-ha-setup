@@ -2,7 +2,18 @@
 # file: roles/edb_efm/default/main.yml
 edb_install_type: offline
 
+# PG Details
+PGVER: 12
+PGDATA: /var/lib/pgsql/{{ PGVER }}/data
+
+# EFM Details
 EFM_VERSION: '4.0'
 EFM_USER: efm
 EFM_USER_PASSWORD: efm@123
 NOTIFICATION_EMAIL: fssai.cdc@gmail.com
+
+
+EFM_GRP: edb_efm
+
+efm_nodes_ips: "{{ groups[EFM_GRP] | 
+  map('extract', hostvars, ['ip']) | list }}"

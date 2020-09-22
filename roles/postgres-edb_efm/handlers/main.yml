@@ -5,3 +5,10 @@
   systemd:
     name: "edb-efm-{{ EFM_VERSION }}"
     state: restarted
+
+# Reload Postgres
+- name: reload postgres
+  become: true
+  systemd:
+    name: "postgresql-{{ PGVER }}"
+    state: reloaded
