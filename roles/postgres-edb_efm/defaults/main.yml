@@ -16,4 +16,4 @@ NOTIFICATION_EMAIL: fssai.cdc@gmail.com
 EFM_GRP: edb_efm
 
 efm_nodes_ips: "{{ groups[EFM_GRP] | 
-  map('extract', hostvars, ['ip']) | list }}"
+  map('extract', hostvars, ['ansible_default_ipv4','address']) | list }}"

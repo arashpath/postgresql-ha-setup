@@ -33,8 +33,8 @@ Vagrant.configure("2") do |config|
       if index == hosts.size - 1 
         cfg.vm.provision "ansible" do |ansible|
           ansible.playbook = "playbook.yml"
-          # ansible.tags = 'clean' # to 'clean' postgres setup 
-                                   # 'time' Just set timezone
+          ansible.skip_tags = 'lxd'
+          # ansible.tags = 'clean' # to 'clean' postgres setup
           ansible.limit = "all" 
           ansible.host_vars = hosts
           ansible.groups = { 'pg_repl' => ['db0[1:3]'] }

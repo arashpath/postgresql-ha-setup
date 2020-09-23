@@ -4,12 +4,12 @@
 # master ip
 pg_master_ip: "{% for node in groups[PG_REP_GRP] %}\
   {% if hostvars[node].pg_repl_role == 'master' %}\
-  {{ hostvars[node].ip }}\
+  {{ hostvars[node].ansible_default_ipv4.address }}\
   {% endif %}{% endfor %}"
 
 # list of replication nodes ips
 pg_repl_nodes_ips: "{{ groups[PG_REP_GRP] | 
-  map('extract', hostvars, ['ip']) | list }}"
+  map('extract', hostvars, ['ansible_default_ipv4','address']) | list }}"
 
 # list of replication nodes ids
 pg_repl_nodes_ids: "{{ groups[PG_REP_GRP] | 

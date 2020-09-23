@@ -1,0 +1,12 @@
+# For Testing with lxd
+[all:vars]
+ansible_connection=lxd
+
+[all]
+db01 pg_repl_role=master  pg_repl_id=1
+db02 pg_repl_role=standby pg_repl_id=2
+db03 pg_repl_role=standby pg_repl_id=3
+
+# Groups
+[pg_repl]
+db0[1:3]

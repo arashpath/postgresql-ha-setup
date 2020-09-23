@@ -2,9 +2,15 @@
 ---
 - hosts: all
   gather_facts: no
+  tasks:
+  - import_tasks: tasks/lxd.yml
+    tags: lxd
+
+- hosts: all
+  gather_facts: no
   become: true
   vars_files: vars.yml
-  pre_tasks:
+  tasks:
   - timezone:
       name: 'Asia/Kolkata'
     tags: [ 'time' ]
@@ -15,11 +21,10 @@
     ignore_errors: yes
   
 - hosts: pg_repl
-  gather_facts: no
   become: true
   vars_files: vars.yml
   roles:
   - postgres-replication
   - postgres-edb_efm
   
-
+  
