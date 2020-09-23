@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: sudo snap install lxd --channel=3.0/stable
-    - run: sudo lxd --auto
+    - run: sudo lxd init --auto
     - name: Check Ansible Syntax
       run: ansible-playbook playbook.yml --syntax-check
     - name: Create Ansible Infra
