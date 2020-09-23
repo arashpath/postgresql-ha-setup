@@ -1,6 +1,10 @@
 ---
 # file: roles/edb_efm/tasks/main.yml
 
+- name: nodeips
+  setup:
+    gather_subset: network
+
 - import_tasks: install_efm.yml
   become: yes
   tags:

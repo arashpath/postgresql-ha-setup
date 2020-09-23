@@ -21,6 +21,7 @@
     ignore_errors: yes
   
 - hosts: pg_repl
+  gather_facts: no
   become: true
   vars_files: vars.yml
   roles:

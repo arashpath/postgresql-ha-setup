@@ -12,5 +12,5 @@ PG_REP_GRP: pg_repl
 
 # EFM
 EFM_VERSION: '4.0'
-EFM_VIP: 192.168.33.10
+EFM_VIP: 10.8.48.10
 EFM_GRP: pg_repl

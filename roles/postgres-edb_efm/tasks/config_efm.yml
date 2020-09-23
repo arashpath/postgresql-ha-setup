@@ -49,9 +49,9 @@
     - { name: auto.allow.hosts, value: true }
     - { name: stable.nodes.file, value: true }
     - { name: db.bin, value: "/usr/pgsql-{{ PGVER }}/bin" }
-    - { name: bind.address, value: "{{ ip }}:7800" }
+    - { name: bind.address, value: "{{ ansible_default_ipv4.address }}:7800" }
     - { name: primary.shutdown.as.failure, value: true }
-    - { name: ping.server.ip, value: '192.168.33.1' }
+    - { name: ping.server.ip, value: "{{ ansible_default_ipv4.gateway }}" }
     - { name: auto.resume.period, value: 10 }
     - { name: application.name, value: "{{'node'+pg_repl_id|string}}" }
     - { name: update.physical.slots.period, value: "10" }
@@ -64,7 +64,7 @@
     line: "{{ item.name + '=' + item.value|string }}"
   with_items:
     - { name: virtual.ip, value: "{{ EFM_VIP }}" }
-    - { name: virtual.ip.interface, value: "eth1" }
+    - { name: virtual.ip.interface, value: "{{ ansible_default_ipv4.interface }}" }
     - { name: virtual.ip.prefix, value: 24 }
   notify: restart efm
   when: EFM_VIP is defined

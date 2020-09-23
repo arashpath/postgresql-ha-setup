@@ -11,7 +11,7 @@ RUN ${DLREPO} postgresql${PGVER}-contrib pgpool-II-${PG_VER}
 
 # EPEL
 RUN yum -y install epel-release
-RUN ${DLREPO} java-1.8.0-openjdk mailx
+RUN ${DLREPO} java-1.8.0-openjdk mailx which
 RUN ${DLREPO} python-pip python-psycopg2
 
 # EDB

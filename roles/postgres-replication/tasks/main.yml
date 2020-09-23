@@ -1,6 +1,9 @@
 ---
 #file: roles/pg_stearming/tasks/main.ym
-
+- name: nodeips
+  setup:
+    gather_subset: network
+ 
 - name: debug
   block:
   - debug: var=pg_repl_role

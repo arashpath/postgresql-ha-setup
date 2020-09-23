@@ -11,11 +11,6 @@
       alias: "{{ os_image | default('centos/7/amd64') }}"
   delegate_to: 127.0.0.1
   tags: lxd
-- package:
-    state: present
-    name: which
-    use: auto 
-  tags: lxd
 - name: Remove Containers
   block:
   - lxd_container:
