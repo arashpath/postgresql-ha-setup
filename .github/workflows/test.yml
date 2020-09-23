@@ -17,4 +17,4 @@ jobs:
     - name: Check Ansible Syntax
       run: ansible-playbook playbook.yml --syntax-check
     - name: Create Ansible Infra
-      run: ansible-playbook playbook.yml -v
+      run: sudo ansible-playbook playbook.yml -v
