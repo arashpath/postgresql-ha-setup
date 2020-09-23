@@ -1,5 +1,5 @@
-# This workflow will provision AWS resources
-name: Create AWS Infra
+# This workflow will test Playbook with ANSIBL & LXD
+name: Test playbook with Ansible and LXD
 
 on:
   push:
@@ -12,8 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: snap install lxd --channel=3.0/stable
-    - run: lxd --auto
+    - run: sudo snap install lxd --channel=3.0/stable
+    - run: sudo lxd --auto
     - name: Check Ansible Syntax
       run: ansible-playbook playbook.yml --syntax-check
     - name: Create Ansible Infra
