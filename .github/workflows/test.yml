@@ -6,12 +6,14 @@ on:
     branches: [ half-baked ]
 
 jobs:
-  deploy:
+  test:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+    - run: snap install lxd --channel=3.0/stable
+    - run: lxd --auto
     - name: Check Ansible Syntax
       run: ansible-playbook playbook.yml --syntax-check
     - name: Create Ansible Infra
