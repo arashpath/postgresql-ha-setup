@@ -1,0 +1,6 @@
+---
+# file: roles/postgres-install/tasks/setup_pgrepo.yml
+
+- name: Install postgres official repo
+  yum: 
+    name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm

@@ -63,8 +63,8 @@
     regexp: "{{ item.name + '=' }}"
     line: "{{ item.name + '=' + item.value|string }}"
   with_items:
-    - { name: virtual.ip, value: "{{ EFM_VIP }}" }
+    - { name: virtual.ip, value: "{{ EFM_VIP | ipaddr('address') }}" }
     - { name: virtual.ip.interface, value: "{{ ansible_default_ipv4.interface }}" }
-    - { name: virtual.ip.prefix, value: 24 }
+    - { name: virtual.ip.prefix, value: "{{ EFM_VIP | ipaddr('prefix') }}" }
   notify: restart efm
   when: EFM_VIP is defined

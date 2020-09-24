@@ -1,6 +1,11 @@
 ---
 #file: roles/postgres-install/tasks/main.yml
 
+- import_tasks: setup_pgrepo.yml
+  become: yes
+  when: pg_repo
+  tags: pg_install
+
 - import_tasks: install_pgdb.yml
   become: yes
   tags: pg_install

@@ -2,28 +2,18 @@
 ---
 - hosts: all
   gather_facts: no
-  tasks:
-  - import_tasks: tasks/lxd.yml
-    tags: lxd
-
-- hosts: all
-  gather_facts: no
-  become: true
-  vars_files: vars.yml
+  roles:
+  - lxd_inventory
   tasks:
   - timezone:
       name: 'Asia/Kolkata'
     tags: [ 'time' ]
-  - import_tasks: tasks/local_repo.yml
-    tags: ['repo']
-  - import_tasks: tasks/clean.yml
-    tags: [ 'never', 'clean' ]
-    ignore_errors: yes
   
 - hosts: pg_repl
   gather_facts: no
   become: true
-  vars_files: vars.yml
+  vars:   
+    PGDATA: /srv/pgdata
   roles:
   - postgres-replication
   - postgres-edb_efm

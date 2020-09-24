@@ -1,7 +1,7 @@
 ---
 #file: roles/postgres-install/default/main.yml
 
-pg_install_type: offline
+pg_repo: True
 PGVER: 12
 PGDATA: /var/lib/pgsql/{{ PGVER }}/data
 PGUSER: postgres
