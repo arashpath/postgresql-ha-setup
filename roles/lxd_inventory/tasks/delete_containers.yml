@@ -3,5 +3,4 @@
       name: "{{ inventory_hostname }}"
       state: absent
   delegate_to: 127.0.0.1
-- name: exit 
-  fail: msg="No More Containers"
+- meta: end_play

@@ -1,20 +1,12 @@
 #!/usr/bin/ansible-playbook
 ---
-- hosts: all
-  gather_facts: no
-  roles:
-  - lxd_inventory
-  tasks:
-  - timezone:
-      name: 'Asia/Kolkata'
-    tags: [ 'time' ]
-  
 - hosts: pg_repl
   gather_facts: no
   become: true
   vars:   
     PGDATA: /srv/pgdata
   roles:
+  - lxd_inventory
   - postgres-replication
   - postgres-edb_efm
   

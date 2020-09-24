@@ -4,7 +4,7 @@
 - name: TimeZone Set
   timezone:
     name: "{{ TZ }}"
-    tags: [ 'time' ]
+  tags: [ 'time' ]
 
 - import_tasks: setup_pgrepo.yml
   become: yes
