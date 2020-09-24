@@ -46,9 +46,8 @@ jobs:
           name: default
         cluster: null
         EOF
-    - run: sudo lxc launch images:centos/7 test
-    - run: sleep 5; sudo lxc list
+
     - run: echo "${{ secrets.VAULT_PASS }}" > .vault_pass
     - name: Provision Infra
-      run: ansible-playbook playbook.yml -e @edb_cred.yml
+      run: sudo ansible-playbook playbook.yml -e @edb_cred.yml
     - run: sudo lxc list 
