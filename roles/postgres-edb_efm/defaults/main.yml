@@ -12,10 +12,9 @@ PGDATA: /var/lib/pgsql/{{ PGVER }}/data
 EFM_VERSION: '4.0'
 EFM_USER: efm
 EFM_USER_PASSWORD: efm@123
-NOTIFICATION_EMAIL: fssai.cdc@gmail.com
+NOTIFICATION_EMAIL: admin@gmail.com
 
-
-EFM_GRP: edb_efm
+EFM_GRP: 'pg_repl'
 
 efm_nodes_ips: "{{ groups[EFM_GRP] | 
   map('extract', hostvars, ['ansible_default_ipv4','address']) | list }}"

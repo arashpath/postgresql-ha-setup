@@ -1,6 +1,6 @@
-db01 ip=10.51.17.11 pg_repl_role=master  pg_repl_id=1
-db02 ip=10.51.17.12 pg_repl_role=standby pg_repl_id=2
-db03 ip=10.51.17.13 pg_repl_role=standby pg_repl_id=3
+db01 ip=10.246.23.11 pg_repl_role=master  pg_repl_id=1
+db02 ip=10.246.23.12 pg_repl_role=standby pg_repl_id=2
+db03 ip=10.246.23.13 pg_repl_role=standby pg_repl_id=3
 
 # Groups
 [pg_repl]

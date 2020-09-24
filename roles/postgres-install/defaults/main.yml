@@ -1,6 +1,9 @@
 ---
 #file: roles/postgres-install/default/main.yml
 
+# TimeZone
+TZ: 'Asia/Kolkata'
+
 pg_repo: True
 PGVER: 12
 PGDATA: /var/lib/pgsql/{{ PGVER }}/data

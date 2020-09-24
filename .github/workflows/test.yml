@@ -49,6 +49,6 @@ jobs:
     
     - name: Check Ansible Syntax
       run: ansible-playbook playbook.yml --syntax-check
-    - name: Create Ansible Infra
-      run: sudo ansible-playbook playbook.yml -t lxd
+    - name: Provision Infra
+      run: sudo ansible-playbook playbook.yml
     - run: sudo lxc list 
