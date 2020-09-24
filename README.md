@@ -49,8 +49,8 @@ vagrant ssh db01 -c "psql -U postgres -c 'select * from pg_replication_slots;'"
 - [x] Install PostgreSQL12
 - [x] Setup Streaming Replication
 - [x] Setup EFM 
-- [] Setup PEM
-- [] Setup BART
+- [ ] Setup PEM
+- [ ] Setup BART
 
 # Ref.
 - https://www.enterprisedb.com/edb-docs/d/edb-postgres-failover-manager/user-guides/high-availability-scalability-guide/4.0/architecture.html
