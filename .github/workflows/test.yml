@@ -46,7 +46,7 @@ jobs:
           name: default
         cluster: null
         EOF
-    - run: apt install python-netaddr
+    - run: sudo apt install python-netaddr
     - run: echo "${{ secrets.VAULT_PASS }}" > .vault_pass
     - name: Provision Infra
       run: sudo ansible-playbook playbook.yml -e @edb_cred.yml
