@@ -14,4 +14,5 @@
         nictype: bridged
         parent: lxdbr0
         ipv4.address: "{{ ip }}"
+    wait_for_ipv4_addresses: yes
   delegate_to: 127.0.0.1
