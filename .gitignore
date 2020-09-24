@@ -2,3 +2,4 @@
 more/
 *.tgz
 .env
+.vault_pass

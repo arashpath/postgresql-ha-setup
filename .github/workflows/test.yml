@@ -46,8 +46,21 @@ jobs:
           name: default
         cluster: null
         EOF
-
+    - run: apt install python-netaddr
     - run: echo "${{ secrets.VAULT_PASS }}" > .vault_pass
     - name: Provision Infra
       run: sudo ansible-playbook playbook.yml -e @edb_cred.yml
     - run: sudo lxc list 
+    - name: check efm status
+      run: sudo lxc exec db01 -- /usr/edb/efm-4.0/bin/efm cluster-status efm
+    - name: check replication on master
+      run: sudo lxc exec db01 -- psql -U postgres -xc 'select * from pg_stat_replication;'
+    - name: check switchover
+      run: sudo lxc exec db01 -- /usr/edb/efm-4.0/bin/efm promote efm -switchover
+    - name: check efm status
+      run: sleep 30; sudo lxc exec db01 -- /usr/edb/efm-4.0/bin/efm cluster-status efm
+    - name: check failover
+      run: sudo lxc stop db02
+    - name: check efm status
+      run: sleep 30; sudo lxc exec db01 -- /usr/edb/efm-4.0/bin/efm cluster-status efm
+      
