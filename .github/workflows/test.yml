@@ -13,12 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: sudo lxc version
-    - run: sudo adduser $USER lxd
-    - run: newgrp lxd 
-    - run: sudo chown $USER.$USER ~/.config/lxc/config.yml
-    - run: lxc version
     - run: |
-        cat <<EOF | lxd init --preseed
+        cat <<EOF | sudo lxd init --preseed
         config: {}
         networks:
         - config:
