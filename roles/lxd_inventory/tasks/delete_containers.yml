@@ -3,4 +3,6 @@
       name: "{{ inventory_hostname }}"
       state: absent
   delegate_to: 127.0.0.1
+  register: rm_lxd
 - meta: end_play
+  when: rm_lxd is defined and rm_lxd.changed

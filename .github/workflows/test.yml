@@ -47,8 +47,7 @@ jobs:
         cluster: null
         EOF
     
-    - name: Check Ansible Syntax
-      run: ansible-playbook playbook.yml --syntax-check
+    - run: echo "${{ secrets.VAULT_PASS }}" > .vault_pass
     - name: Provision Infra
-      run: sudo ansible-playbook playbook.yml
+      run: ansible-playbook playbook.yml -e @edb_cred.yml
     - run: sudo lxc list 

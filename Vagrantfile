@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
           ansible.host_vars = hosts
           ansible.groups = { 'pg_repl' => ['db0[1:3]'] }
           # Optional EFM Virtual IP
-          ansible.extra_vars = { 'EFM_VIP' => '192.168.33.10' }
+          ansible.extra_vars = { 'EFM_VIP' => '192.168.33.10/24' }
         end 
       end
     end
