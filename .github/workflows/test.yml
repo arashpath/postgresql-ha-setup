@@ -15,6 +15,7 @@ jobs:
     - run: sudo lxc version
     - run: sudo adduser $USER lxd
     - run: newgrp lxd 
+    - run: sudo chown $USER.$USER ~/.config/lxc/config.yml
     - run: lxc version
     - run: |
         cat <<EOF | lxd init --preseed
