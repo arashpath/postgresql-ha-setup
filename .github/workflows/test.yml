@@ -12,9 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt install -y lxd
+    - run: sudo lxc version
     - run: sudo adduser $USER lxd
     - run: newgrp lxd 
+    - run: lxc version
     - run: |
         cat <<EOF | lxd init --preseed
         config: {}
