@@ -51,4 +51,4 @@ jobs:
       run: ansible-playbook playbook.yml --syntax-check
     - name: Create Ansible Infra
       run: sudo ansible-playbook playbook.yml -t lxd
-    - run: lxc list 
+    - run: sudo lxc list 
