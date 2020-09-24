@@ -3,5 +3,5 @@
 
 - import_tasks: create_containers.yml
   tags: lxd
-- import_tasks: delete_containers.yml
-  tags: ['never', 'rm_lxd']
+#- import_tasks: delete_containers.yml
+#  tags: ['never', 'rm_lxd']
