@@ -1,9 +1,9 @@
 # This workflow will test Playbook with ANSIBL & LXD
-name: Test playbook with Ansible and LXD
+name: EFM Failover
 
 on:
   push:
-    branches: [ half-baked ]
+    branches: [ master ]
 
 jobs:
   test:
