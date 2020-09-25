@@ -1,0 +1,56 @@
+# This workflow will test Playbook with ANSIBL & LXD
+name: EFM Failover
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup lxd
+      run: |
+        cat <<EOF | sudo lxd init --preseed
+        config: {}
+        networks:
+        - config:
+            ipv4.address: 10.246.23.1/24
+            ipv4.nat: "true"
+            ipv6.address: auto
+          description: ""
+          managed: false
+          name: lxdbr0
+          type: ""
+        storage_pools:
+        - config: {}
+          description: ""
+          name: default
+          driver: dir
+        profiles:
+        - config: {}
+          description: ""
+          devices:
+            eth0:
+              name: eth0
+              nictype: bridged
+              parent: lxdbr0
+              type: nic
+            root:
+              path: /
+              pool: default
+              type: disk
+          name: default
+        cluster: null
+        EOF
+    - name: install pre-requisits
+      run: sudo apt install python-netaddr
+    - name: Set vault pass
+      run: echo "${{ secrets.VAULT_PASS }}" > .vault_pass
+    - name: Provision Infra
+      run: sudo ansible-playbook playbook.yml -e @edb_cred.yml --skip-tags local
+    - name: RUN Tests
+      run: sudo ./test.sh      

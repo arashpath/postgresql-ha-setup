@@ -10,9 +10,9 @@
       - "postgresql{{ PGVER }}"
     state: present   
       
-- name: Install python pip and psycopg2
+- name: Install python psycopg2
   yum:
-    name: [ 'python-pip', 'python-psycopg2' ]
+    name: [ "python-psycopg2", "python-ipaddress" ]
     state: present    
 
 - name: Copy postgres systemd file

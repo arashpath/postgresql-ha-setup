@@ -4,15 +4,15 @@ WORKDIR /repos
 ARG DLREPO="yum install -y --downloadonly --downloaddir=/repos"
 
 # PostgreSQL
+RUN ${DLREPO} python-psycopg2 python-ipaddress
 RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 ARG PGVER=12
-RUN ${DLREPO} postgresql${PGVER} postgresql${PG_VER}-server
+RUN ${DLREPO} postgresql${PGVER} 
+RUN ${DLREPO} postgresql${PG_VER}-server
 RUN ${DLREPO} postgresql${PGVER}-contrib pgpool-II-${PG_VER}
 
 # EPEL
-RUN yum -y install epel-release
-RUN ${DLREPO} java-1.8.0-openjdk mailx
-RUN ${DLREPO} python-pip python-psycopg2
+RUN ${DLREPO} java-1.8.0-openjdk mailx which sudo
 
 # EDB
 RUN yum -y install https://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm

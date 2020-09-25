@@ -1,7 +1,13 @@
 ---
 #file: roles/postgres-install/default/main.yml
 
-pg_install_type: offline
+# TimeZone
+TZ: 'Asia/Kolkata'
+
+# set up postgres repository
+pg_repo: no
+
+# Postgres Installation details
 PGVER: 12
 PGDATA: /var/lib/pgsql/{{ PGVER }}/data
 PGUSER: postgres

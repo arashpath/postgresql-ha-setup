@@ -2,7 +2,7 @@
 
 - name: efm prerequisits installed
   yum: 
-    name:  [ 'java-1.8.0-openjdk', 'mailx' ]
+    name:  [ 'java-1.8.0-openjdk', 'mailx', 'which', 'sudo' ]
     state: present
     
 - name: efm installed
