@@ -53,4 +53,4 @@ jobs:
     - name: Provision Infra
       run: sudo ansible-playbook playbook.yml -e @edb_cred.yml --skip-tags local
     - name: RUN Tests
-      run: sudo ./test.sh      
+      run: sudo ./tests.sh      
