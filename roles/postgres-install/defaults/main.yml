@@ -4,7 +4,10 @@
 # TimeZone
 TZ: 'Asia/Kolkata'
 
-pg_repo: True
+# set up postgres repository
+pg_repo: no
+
+# Postgres Installation details
 PGVER: 12
 PGDATA: /var/lib/pgsql/{{ PGVER }}/data
 PGUSER: postgres

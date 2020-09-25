@@ -5,8 +5,11 @@
   become: true
   vars:   
     PGDATA: /srv/pgdata
+  pre_tasks:
+  - import_role: 
+      name: lxd_inventory
+  - import_tasks: local_repo.yml
   roles:
-  - lxd_inventory
   - postgres-replication
   - postgres-edb_efm
   

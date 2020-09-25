@@ -1,0 +1,34 @@
+---
+# pre_tasks/local_repo.yml
+
+- name: centos repos removed
+  shell: 
+    cmd: mkdir -p /etc/yum.repos.d/repobkp ; mv /etc/yum.repos.d/CentOS-* /etc/yum.repos.d/repobkp
+    warn: false
+    removes: /etc/yum.repos.d/CentOS-*
+  tags: local
+
+- name: postgres repo copied
+  unarchive:
+    src: repos.tgz
+    dest: /opt/
+    creates: /opt/repos/repodata/repomd.xml
+  tags: local
+
+- name: pg repo added
+  copy:
+    dest: /etc/yum.repos.d/local.repo
+    mode: 0644
+    content: | 
+      [local-repo]
+      name=Local Repo
+      baseurl=file:///opt/repos
+      enabled=1
+      gpgcheck=0
+  tags: local
+
+- name: clean repo data
+  file: 
+    path: /opt/repos/repodata
+    state: absent
+  tags: ['never', 'clean_repo']
