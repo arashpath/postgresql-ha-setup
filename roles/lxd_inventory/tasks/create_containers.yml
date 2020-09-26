@@ -5,9 +5,9 @@
     source:
       type: image
       mode: pull
-      server: https://images.linuxcontainers.org
-      protocal: simplestreams
-      alias: "{{ os_image | default('centos/7/amd64') }}"
+      server: "{{ lxc_img_server | default(omit) }}"
+      protocal: "{{ lxc_img_server_protocal | default(omit) }}"
+      alias: "{{ lxc_alias }}"
     devices:
       eth0:
         type: nic

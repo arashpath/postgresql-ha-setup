@@ -12,6 +12,10 @@
 - [ ] Setup BART
 - [ ] Test Point-in-Time Recovery using bart
 
+## Other Repos
+- https://github.com/EnterpriseDB/edb-ansible
+- https://github.com/EnterpriseDB/postgres-deployment
+
 ## Ref.
 - https://www.enterprisedb.com/edb-docs/d/edb-postgres-failover-manager/user-guides/high-availability-scalability-guide/4.0/architecture.html
 - https://www.enterprisedb.com/blog/how-provision-and-deploy-highly-available-postgres-terraform-and-ansible-automation-scripts

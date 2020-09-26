@@ -46,8 +46,9 @@ jobs:
           name: default
         cluster: null
         EOF
+    - run: sudo lxc image copy images:centos/7 local: --copy-aliases
     - name: install pre-requisits
-      run: sudo apt install python-netaddr
+    - run: sudo apt install python-netaddr
     - name: Set vault pass
       run: echo "${{ secrets.VAULT_PASS }}" > .vault_pass
     - name: Provision Infra

@@ -1,0 +1,5 @@
+---
+# file: roles/lxd_invenroty/defaults/main.yml
+lxc_alias: centos/7/amd64
+#lxc_img_server: https://images.linuxcontainers.org
+#lxc_img_server_protocal: simplestreams
