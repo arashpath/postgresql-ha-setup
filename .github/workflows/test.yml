@@ -47,7 +47,9 @@ jobs:
         cluster: null
         EOF
 
-    - run: sudo lxc image copy images:centos/7 local: --copy-aliases
+    - name: cache lxd image locally 
+      run: |
+        sudo lxc image copy images:centos/7 local: --copy-aliases
     - name: install pre-requisits
       run: sudo apt install python-netaddr
     - name: Set vault pass
